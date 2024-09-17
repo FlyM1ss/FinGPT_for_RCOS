@@ -1,0 +1,10 @@
+Button,URL,Question
+Ask,https://finance.yahoo.com/,Summarize this page
+Advanced Ask,https://finance.yahoo.com/,Explain the term of custom tags in XBRL in concise language.
+Ask,https://finance.yahoo.com/,Summarize this page and list some stock prices
+Ask,https://finance.yahoo.com/,Summarize the given information
+Advanced Ask,https://finance.yahoo.com/,Explain the efficient market hypothesis
+Advanced Ask,https://finance.yahoo.com/,Explain the Product model of the common domain model in detail.
+Advanced Ask,https://finance.yahoo.com/,Explain the product model in the common domain model with the provided context.
+Advanced Ask,https://finance.yahoo.com/,Explain the product model in common domain model with the provided information.
+Advanced Ask,https://finance.yahoo.com/,Organize the explanation into clean keypoints.
