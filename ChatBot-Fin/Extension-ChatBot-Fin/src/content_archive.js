@@ -75,13 +75,13 @@ function handleChatResponse(question, isAdvanced = false) {
     appendChatElement(additionalResponseContainer, 'your_question', question);
 
     const mainLoadingElement = appendChatElement(responseContainer, 'agent_response', `gpt-4o: Loading...`);
-    const additionalLoadingElement = appendChatElement(additionalResponseContainer, 'agent_response', `Gemma 2B: Loading...`);
+    const additionalLoadingElement = appendChatElement(additionalResponseContainer, 'agent_response', `gpt-3.5-turbo: Loading...`);
 
     const encodedQuestion = encodeURIComponent(question);
 
     const endpoint = isAdvanced ? 'get_adv_response' : 'get_chat_response';
 
-    fetch(`http://127.0.0.1:8000/${endpoint}/?question=${encodedQuestion}&models=gpt-4o,gemma-2b&is_advanced=${isAdvanced}`, { method: 'GET' })
+    fetch(`http://127.0.0.1:8000/${endpoint}/?question=${encodedQuestion}&models=gpt-4o,gpt-3.5-turbo&is_advanced=${isAdvanced}`, { method: 'GET' })
         .then(response => response.json())
         .then(data => {
             const endTime = performance.now();
@@ -89,7 +89,7 @@ function handleChatResponse(question, isAdvanced = false) {
             console.log(`Time taken for response: ${responseTime} ms`);
 
             mainLoadingElement.innerText = `gpt-4o: ${data.resp['gpt-4o']}`;
-            additionalLoadingElement.innerText = `Gemma 2B: ${data.resp['gemma-2b']}`;
+            additionalLoadingElement.innerText = `gpt-3.5-turbo: ${data.resp['gpt-3.5-turbo']}`;
 
             document.getElementById('textbox').value = '';
             responseContainer.scrollTop = responseContainer.scrollHeight;
@@ -98,7 +98,7 @@ function handleChatResponse(question, isAdvanced = false) {
             console.error('There was a problem with your fetch operation:', error);
 
             mainLoadingElement.innerText = "gpt-4o: Failed to load response.";
-            additionalLoadingElement.innerText = "Gemma 2B: Failed to load response.";
+            additionalLoadingElement.innerText = "gpt-3.5-turbo: Failed to load response.";
         });
 }
 
@@ -394,7 +394,7 @@ additionalHeader.id = "additionalHeader";
 additionalHeader.className = "draggable";
 
 const additionalTitle = document.createElement('span');
-additionalTitle.innerText = "Gemma 2B Response";
+additionalTitle.innerText = "gpt-3.5-turbo Response";
 
 additionalHeader.appendChild(additionalTitle);
 additionalPopup.appendChild(additionalHeader);

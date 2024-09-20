@@ -105,98 +105,98 @@ def search_websites_with_keyword(keyword):
     return message_list
 
 
-gemma_model_path = os.path.join(os.path.dirname(__file__), 'gemma-2-2b-it')
-tokenizer = AutoTokenizer.from_pretrained(gemma_model_path)
-
-# Initialization
-with init_empty_weights():
-    model = AutoModelForCausalLM.from_pretrained(
-        gemma_model_path,
-        low_cpu_mem_usage=True,
-        torch_dtype=torch.bfloat16  # model weights use bfloat16
-    )
-
-# tie the model weights before dispatching
-model.tie_weights()
-
-# Load the model with CPU offloading and layer dispatch to handle limited memory
-model = load_checkpoint_and_dispatch(
-    model,
-    gemma_model_path,
-    device_map={"": "cpu"},
-    offload_state_dict=True
-)
+# gemma_model_path = os.path.join(os.path.dirname(__file__), 'gemma-2-2b-it')
+# tokenizer = AutoTokenizer.from_pretrained(gemma_model_path)
+#
+# # Initialization
+# with init_empty_weights():
+#     model = AutoModelForCausalLM.from_pretrained(
+#         gemma_model_path,
+#         low_cpu_mem_usage=True,
+#         torch_dtype=torch.bfloat16  # model weights use bfloat16
+#     )
+#
+# # tie the model weights before dispatching
+# model.tie_weights()
+#
+# # Load the model with CPU offloading and layer dispatch to handle limited memory
+# model = load_checkpoint_and_dispatch(
+#     model,
+#     gemma_model_path,
+#     device_map={"": "cpu"},
+#     offload_state_dict=True
+# )
 
 
 # Gemma 2B - Modified response generation to work on CPU
-def generate_gemma_response(message_list):
-    # concatenated_input = " ".join([msg["content"] for msg in message_list])
-    #
-    # print(concatenated_input)
-    #
-    # # keep input_ids as LongTensor
-    # inputs = tokenizer(concatenated_input, return_tensors="pt")
-    # inputs = {key: value.to("cpu") for key, value in inputs.items()}
-    #
-    # # model weights are in bfloat16
-    # outputs = model.generate(**inputs, max_length=6000)
-    #
-    # # Decode the generated output
-    # full_output = tokenizer.decode(outputs[0], skip_special_tokens=True)
-    #
-    # print("Output prior to stripping: " + full_output)
-    full_output = "This is a mock output."
-
-    # response = full_output.replace(concatenated_input, "").strip()
-
-    return full_output
-
-
-# Gemma 2B
-def create_gemma_response(user_input, message_list):
-    """
-    Generates a response from the locally run Gemma 2B model.
-    """
-
-    message_list.append({"role": "user", "content": user_input})
-
-    print("The received message list for response generation:", message_list)
-
-    response = generate_gemma_response(message_list)
-    message_list.append({"role": "system", "content": response})
-
-    print(response)
-    return response
-
-
-# Gemma 2B
-def create_gemma_advanced_response(user_input, message_list):
-    """
-    Generates an advanced response from the locally run Gemma 2B model,
-    searching URLs before generating a response.
-    """
-
-    message_list.append({"role": "user",
-                         "content": "Answer the following question with the context provided below: " + user_input + "\n" + "Below is context: " + "\n"})
-
-    # Search in preferred URLs first
-    print("Searching user preferred URLs")
-    preferred_message_list = search_preferred_urls(user_input)  # URL searching logic
-    message_list.extend(preferred_message_list)
-
-    # If no relevant information found, fall back to Gemma 2B response
-    if not preferred_message_list:
-        for url in search(user_input, num=10, stop=10, pause=0):
-            info = data_scrape(url)
-            if info != -1:
-                message_list.append({"role": "system", "content": "url: " + str(url) + " info: " + info})
-
-    print(message_list)
-    response = generate_gemma_response(message_list)
-
-    message_list.append({"role": "system", "content": response})
-
-    return response
+# def generate_gemma_response(message_list):
+#     # concatenated_input = " ".join([msg["content"] for msg in message_list])
+#     #
+#     # print(concatenated_input)
+#     #
+#     # # keep input_ids as LongTensor
+#     # inputs = tokenizer(concatenated_input, return_tensors="pt")
+#     # inputs = {key: value.to("cpu") for key, value in inputs.items()}
+#     #
+#     # # model weights are in bfloat16
+#     # outputs = model.generate(**inputs, max_length=6000)
+#     #
+#     # # Decode the generated output
+#     # full_output = tokenizer.decode(outputs[0], skip_special_tokens=True)
+#     #
+#     # print("Output prior to stripping: " + full_output)
+#     full_output = "This is a mock output."
+#
+#     # response = full_output.replace(concatenated_input, "").strip()
+#
+#     return full_output
+#
+#
+# # Gemma 2B
+# def create_gemma_response(user_input, message_list):
+#     """
+#     Generates a response from the locally run Gemma 2B model.
+#     """
+#
+#     message_list.append({"role": "user", "content": user_input})
+#
+#     print("The received message list for response generation:", message_list)
+#
+#     response = generate_gemma_response(message_list)
+#     message_list.append({"role": "system", "content": response})
+#
+#     print(response)
+#     return response
+#
+#
+# # Gemma 2B
+# def create_gemma_advanced_response(user_input, message_list):
+#     """
+#     Generates an advanced response from the locally run Gemma 2B model,
+#     searching URLs before generating a response.
+#     """
+#
+#     message_list.append({"role": "user",
+#                          "content": "Answer the following question with the context provided below: " + user_input + "\n" + "Below is context: " + "\n"})
+#
+#     # Search in preferred URLs first
+#     print("Searching user preferred URLs")
+#     preferred_message_list = search_preferred_urls(user_input)  # URL searching logic
+#     message_list.extend(preferred_message_list)
+#
+#     # If no relevant information found, fall back to Gemma 2B response
+#     if not preferred_message_list:
+#         for url in search(user_input, num=10, stop=10, pause=0):
+#             info = data_scrape(url)
+#             if info != -1:
+#                 message_list.append({"role": "system", "content": "url: " + str(url) + " info: " + info})
+#
+#     print(message_list)
+#     response = generate_gemma_response(message_list)
+#
+#     message_list.append({"role": "system", "content": response})
+#
+#     return response
 
 
 def create_response(user_input, message_list, model="gpt-4o"):
