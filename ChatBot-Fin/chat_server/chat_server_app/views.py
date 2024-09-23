@@ -11,13 +11,16 @@ import request
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
 message_list = [
-    {"role": "system", "content": "You are a helpful financial assistant. Always answer questions to the best of your ability."},
+    {"role": "system",
+     "content": "You are a helpful financial assistant. Always answer questions to the best of your ability."},
 ]
+
 
 # View to return a random number as JSON
 def Get_A_Number(request):
     int_response = random.randint(0, 99)
     return JsonResponse({'resp': int_response})
+
 
 # Function to call the locally run Gemma 2B model
 # def call_local_gemma_model(question):
@@ -43,18 +46,22 @@ def Get_A_Number(request):
 # Ask button
 def chat_response(request):
     question = request.GET.get('question', '')
-    selected_models = request.GET.get('models', 'gpt-4o,gemma-2b')  # Default models: both gpt-4o and gemma-2b
+    selected_models = request.GET.get('models', 'gpt-4o,gpt-3.5-turbo')
     models = selected_models.split(',')
 
     responses = {}
 
     for model in models:
-        if model == "gemma-2b":
-            # Use the locally run Gemma 2B model
-            responses[model] = ds.create_gemma_response(question, message_list.copy())
-        else:
-            # Use GPT-4o or other OpenAI models
-            responses[model] = ds.create_response(question, message_list.copy(), model)
+        # Use OpenAI models atm
+        responses[model] = ds.create_response(question, message_list.copy(), model)
+
+    # for model in models:
+    #     if model == "gemma-2b":
+    #         # Use the locally run Gemma 2B model
+    #         responses[model] = ds.create_gemma_response(question, message_list.copy())
+    #     else:
+    #         # Use GPT-4o or other OpenAI models
+    #         responses[model] = ds.create_response(question, message_list.copy(), model)
 
     return JsonResponse({'resp': responses})
 
@@ -63,21 +70,24 @@ def chat_response(request):
 @csrf_exempt
 def adv_response(request):
     question = request.GET.get('question', '')
-    selected_models = request.GET.get('models', 'gpt-4o,gemma-2b')  # Default models: both gpt-4o and gemma-2b
+    selected_models = request.GET.get('models', 'gpt-4o,gpt-3.5-turbo')
     models = selected_models.split(',')
 
     responses = {}
 
     for model in models:
-        if model == "gemma-2b":
-            # Use the locally run Gemma 2B model for advanced response
-            responses[model] = ds.create_gemma_advanced_response(question, message_list.copy())
-        else:
-            # Use GPT-4o or other OpenAI models for advanced response
-            responses[model] = ds.create_advanced_response(question, message_list.copy(), model)
+        # Use OpenAI models atm
+        responses[model] = ds.create_advanced_response(question, message_list.copy(), model)
+
+    # for model in models:
+    #     if model == "gemma-2b":
+    #         # Use the locally run Gemma 2B model for advanced response
+    #         responses[model] = ds.create_gemma_advanced_response(question, message_list.copy())
+    #     else:
+    #         # Use GPT-4o or other OpenAI models for advanced response
+    #         responses[model] = ds.create_advanced_response(question, message_list.copy(), model)
 
     return JsonResponse({'resp': responses})
-
 
 
 # # View to handle chat responses
@@ -97,14 +107,14 @@ def adv_response(request):
 def add_webtext(request):
     textContent = request.GET.get('textContent', '')
 
-    #text = ds.data_scrape(weburl)
-    #print(weburl)
+    # text = ds.data_scrape(weburl)
+    # print(weburl)
     print(textContent)
 
     message_list.append({"role": "system", "content": textContent})
     return JsonResponse({'resp': 'Text added successfully'})  # Return a JsonResponse
 
-    #return JsonResponse({'resp1': text})
+    # return JsonResponse({'resp1': text})
 
 
 @csrf_exempt
