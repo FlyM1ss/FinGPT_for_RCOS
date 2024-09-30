@@ -288,7 +288,7 @@ header.id = "header";
 header.className = "draggable";
 
 const title = document.createElement('span');
-title.innerText = "FinLLM";
+title.innerText = "FinGPT";
 
 // Icon container
 const iconContainer = document.createElement('div');
