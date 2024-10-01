@@ -8,7 +8,6 @@ import openai
 import ast  # For Python code parsing
 import markdown  # For Markdown parsing
 import logging
-import chardet
 
 os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 
