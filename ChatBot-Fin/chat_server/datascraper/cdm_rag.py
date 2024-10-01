@@ -16,7 +16,11 @@ api_key = os.getenv("API_KEY7")
 openai.api_key = api_key
 
 # Configure logging
-logging.basicConfig(filename='cdm_rag.log', level=logging.INFO, format='%(asctime)s %(levelname)s:%(message)s')
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s %(levelname)s:%(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
 
 # Global variables for index and embeddings
 index = None
@@ -120,17 +124,25 @@ def get_rag_response(question, model_name):
     """
     Generates a response using the RAG pipeline with the specified model.
     """
-    # global index, embeddings
+    global index, embeddings
     if index is None or embeddings is None:
         initialize_rag()
 
     # Retrieve relevant chunks
     relevant_chunks = retrieve_chunks(question, index, embeddings)
 
+    # Log the retrieved chunks at INFO level
+    logging.info("\nRetrieved Chunks:")
+    for i, chunk in enumerate(relevant_chunks):
+        logging.info(f"\nChunk {i + 1}:")
+        logging.info(f"File: {chunk['metadata']['file_path']}")
+        logging.info(f"Content:\n{chunk['text']}")
+
     # Generate answer
     answer = generate_answer(question, relevant_chunks, model_name)
 
     return answer
+
 
 def get_rag_advanced_response(question, model_name):
     """

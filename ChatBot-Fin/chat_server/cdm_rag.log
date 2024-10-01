@@ -111,3 +111,4 @@ Traceback (most recent call last):
 AssertionError
 2024-09-30 02:05:19,366 INFO:C:\Users\27740\OneDrive\Documents\FinGPT\Github\fingpt_rcos\ChatBot-Fin\chat_server\datascraper\cdm_rag.py changed, reloading.
 2024-09-30 02:06:59,977 INFO:C:\Users\27740\OneDrive\Documents\FinGPT\Github\fingpt_rcos\ChatBot-Fin\chat_server\datascraper\cdm_rag.py changed, reloading.
+2024-10-01 10:39:06,796 INFO:C:\Users\T2774\Documents\FinGPT\Github\fingpt_rcos\ChatBot-Fin\chat_server\datascraper\cdm_rag.py changed, reloading.
