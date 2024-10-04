@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 import json
 import random  # Import 'random' for 'randint'
-import datascraper.datascraper as ds  # Import 'datascraper'
+from datascraper import datascraper as ds
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 import os
@@ -48,12 +48,17 @@ def chat_response(request):
     question = request.GET.get('question', '')
     selected_models = request.GET.get('models', 'gpt-4o,gpt-3.5-turbo')
     models = selected_models.split(',')
+    use_rag = request.GET.get('use_rag', 'false').lower() == 'true'
 
     responses = {}
 
     for model in models:
-        # Use OpenAI models atm
-        responses[model] = ds.create_response(question, message_list.copy(), model)
+        if use_rag:
+            # Use the RAG pipeline
+            responses[model] = ds.create_rag_response(question, message_list.copy(), model)
+        else:
+            # Use regular response
+            responses[model] = ds.create_response(question, message_list.copy(), model)
 
     # for model in models:
     #     if model == "gemma-2b":
@@ -72,12 +77,17 @@ def adv_response(request):
     question = request.GET.get('question', '')
     selected_models = request.GET.get('models', 'gpt-4o,gpt-3.5-turbo')
     models = selected_models.split(',')
+    use_rag = request.GET.get('use_rag', 'false').lower() == 'true'
 
     responses = {}
 
     for model in models:
-        # Use OpenAI models atm
-        responses[model] = ds.create_advanced_response(question, message_list.copy(), model)
+        if use_rag:
+            # Use the RAG pipeline for advanced response
+            responses[model] = ds.create_rag_advanced_response(question, message_list.copy(), model)
+        else:
+            # Use regular advanced response
+            responses[model] = ds.create_advanced_response(question, message_list.copy(), model)
 
     # for model in models:
     #     if model == "gemma-2b":
