@@ -146,9 +146,39 @@ function handleChatResponse(question, isAdvanced = false) {
 //     additionalPopup.style.left = `${rect.right + 20}px`;
 // }
 
+document.addEventListener('DOMContentLoaded', () => {
+    // Move the variable declarations inside the DOMContentLoaded event
+    const askButton = document.getElementById('askButton');
+    const advAskButton = document.getElementById('advAskButton');
+    const textbox = document.getElementById('textbox');
+
+    askButton.addEventListener('click', get_chat_response);
+    advAskButton.addEventListener('click', get_adv_chat_response);
+
+    // Add console.log for debugging
+    textbox.addEventListener('keydown', function(event) {
+        console.log("Key pressed:", event.key); // Log key presses
+
+        if (event.key === 'Enter') {
+            event.preventDefault(); // Prevent the default form submit behavior
+            const isAdvanced = event.shiftKey || event.altKey;
+            console.log("Is advanced:", isAdvanced); // Check if shift or alt was pressed
+
+            if (isAdvanced) {
+                console.log("Triggering advanced chat response");
+                get_adv_chat_response();
+            } else {
+                console.log("Triggering normal chat response");
+                get_chat_response();
+            }
+        }
+    });
+});
+
 // Ask button click
 function get_chat_response() {
     const question = document.getElementById('textbox').value;
+    console.log("Normal chat response triggered with question:", question);
 
     if (question) {
         handleChatResponse(question, false);
@@ -159,11 +189,10 @@ function get_chat_response() {
     }
 }
 
-let searchQuery = '';
-
 // Advanced Ask button click
 function get_adv_chat_response() {
     const question = document.getElementById('textbox').value;
+    console.log("Advanced chat response triggered with question:", question);
 
     if (question) {
         handleChatResponse(question, true);
@@ -173,6 +202,7 @@ function get_adv_chat_response() {
         alert("Please enter a question.");
     }
 }
+
 
 function clear() {
     const response = document.getElementById('respons');
