@@ -11,9 +11,9 @@ const availableModels = ["gpt-4o", "gpt-3.5-turbo"];
 let selectedModels = ['gpt-4o', 'gpt-3.5-turbo'];
 
 function getSelectedModels() {
-    // hard-coded atm
-    return ['gpt-4o', 'gpt-3.5-turbo'];
+    return selectedModels;  // Now returns the actual selected models
 }
+
 // Model selection UI, I think, currently not in use
 function loadModelSelection() {
     const modelButtons = document.querySelectorAll('.model-option');
@@ -74,22 +74,38 @@ function handleChatResponse(question, isAdvanced = false) {
     appendChatElement(responseContainer, 'your_question', question);
     appendChatElement(additionalResponseContainer, 'your_question', question);
 
-    const mainLoadingElement = appendChatElement(responseContainer, 'agent_response', `gpt-4o: Loading...`);
-    const additionalLoadingElement = appendChatElement(additionalResponseContainer, 'agent_response', `gpt-3.5-turbo: Loading...`);
+    const mainLoadingElement = appendChatElement(responseContainer, 'agent_response', `${selectedModels[0]}: Loading...`);
+    const additionalLoadingElement = appendChatElement(additionalResponseContainer, 'agent_response', `${selectedModels[1]}: Loading...`);
 
     const encodedQuestion = encodeURIComponent(question);
 
     const endpoint = isAdvanced ? 'get_adv_response' : 'get_chat_response';
 
-    fetch(`http://127.0.0.1:8000/${endpoint}/?question=${encodedQuestion}&models=gpt-4o,gpt-3.5-turbo&is_advanced=${isAdvanced}`, { method: 'GET' })
+    // Read the RAG checkbox state
+    const useRAG = document.getElementById('ragSwitch').checked;
+
+    fetch(`http://127.0.0.1:8000/${endpoint}/?question=${encodedQuestion}&models=${selectedModels.join(',')}&is_advanced=${isAdvanced}&use_rag=${useRAG}`, { method: 'GET' })
         .then(response => response.json())
         .then(data => {
             const endTime = performance.now();
             const responseTime = endTime - startTime;
             console.log(`Time taken for response: ${responseTime} ms`);
 
-            mainLoadingElement.innerText = `gpt-4o: ${data.resp['gpt-4o']}`;
-            additionalLoadingElement.innerText = `gpt-3.5-turbo: ${data.resp['gpt-3.5-turbo']}`;
+            // Check for error messages
+            const mainResponse = data.resp[selectedModels[0]];
+            const additionalResponse = data.resp[selectedModels[1]];
+
+            if (mainResponse.startsWith("The following file(s) are missing")) {
+                mainLoadingElement.innerText = `${selectedModels[0]}: Error - ${mainResponse}`;
+            } else {
+                mainLoadingElement.innerText = `${selectedModels[0]}: ${mainResponse}`;
+            }
+
+            if (additionalResponse.startsWith("The following file(s) are missing")) {
+                additionalLoadingElement.innerText = `${selectedModels[1]}: Error - ${additionalResponse}`;
+            } else {
+                additionalLoadingElement.innerText = `${selectedModels[1]}: ${additionalResponse}`;
+            }
 
             document.getElementById('textbox').value = '';
             responseContainer.scrollTop = responseContainer.scrollHeight;
@@ -97,10 +113,11 @@ function handleChatResponse(question, isAdvanced = false) {
         .catch(error => {
             console.error('There was a problem with your fetch operation:', error);
 
-            mainLoadingElement.innerText = "gpt-4o: Failed to load response.";
-            additionalLoadingElement.innerText = "gpt-3.5-turbo: Failed to load response.";
+            mainLoadingElement.innerText = `${selectedModels[0]}: Failed to load response.`;
+            additionalLoadingElement.innerText = `${selectedModels[1]}: Failed to load response.`;
         });
 }
+
 
 
 
@@ -271,7 +288,7 @@ header.id = "header";
 header.className = "draggable";
 
 const title = document.createElement('span');
-title.innerText = "FinLLM";
+title.innerText = "FinGPT";
 
 // Icon container
 const iconContainer = document.createElement('div');
@@ -565,9 +582,24 @@ function loadPreferredLinks() {
         .catch(error => console.error('Error loading preferred links:', error));
 }
 
+// Local RAG Toggle
+const ragLabel = document.createElement('label');
+ragLabel.innerText = "Local RAG";
+
+const ragSwitch = document.createElement('input');
+ragSwitch.type = "checkbox";
+ragSwitch.id = "ragSwitch";  // Assign an ID to access later
+ragSwitch.onchange = function() {
+    // Handle any immediate actions if needed when the checkbox state changes
+};
+
+ragLabel.appendChild(ragSwitch);
+
 preferredLinksContent.appendChild(addLinkButton);
 preferredLinksContainer.appendChild(preferredLinksContent);
 settings_window.appendChild(preferredLinksContainer);
+settings_window.appendChild(ragLabel);
+
 
 document.body.appendChild(settings_window);
 
@@ -594,6 +626,7 @@ settingsIcon.onclick = function() {
         loadPreferredLinks();
     }
 };
+
 
 // Close settings popup when clicks outside
 document.addEventListener('click', function(event) {

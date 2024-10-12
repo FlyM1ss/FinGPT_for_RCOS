@@ -11,7 +11,8 @@
     {
       "matches": [
         "https://www.bloomberg.com/*",
-        "https://finance.yahoo.com/*"
+        "https://finance.yahoo.com/*",
+        "https://cdm.finos.org/*"
       ],
       "js": [
         "content_archive.js"

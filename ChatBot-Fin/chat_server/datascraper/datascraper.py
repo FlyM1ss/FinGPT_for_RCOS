@@ -9,6 +9,7 @@ from urllib.parse import urljoin
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from accelerate import init_empty_weights, load_checkpoint_and_dispatch
 import torch
+from . import cdm_rag
 
 load_dotenv()
 api_key = os.getenv("API_KEY7")
@@ -103,6 +104,35 @@ def search_websites_with_keyword(keyword):
             print("Failed to retrieve search results.")
 
     return message_list
+
+def create_rag_response(user_input, message_list, model):
+    """
+    Generates a response using the RAG pipeline.
+    """
+    try:
+        response = cdm_rag.get_rag_response(user_input, model)
+        message_list.append({"role": "system", "content": response})
+        return response
+    except FileNotFoundError as e:
+        # Handle the error and return the error message
+        error_message = str(e)
+        message_list.append({"role": "system", "content": error_message})
+        return error_message
+
+def create_rag_advanced_response(user_input, message_list, model):
+    """
+    Generates an advanced response using the RAG pipeline.
+    """
+    try:
+        response = cdm_rag.get_rag_advanced_response(user_input, model)
+        message_list.append({"role": "system", "content": response})
+        return response
+    except FileNotFoundError as e:
+        # Handle the error and return the error message
+        error_message = str(e)
+        message_list.append({"role": "system", "content": error_message})
+        return error_message
+
 
 
 # gemma_model_path = os.path.join(os.path.dirname(__file__), 'gemma-2-2b-it')
