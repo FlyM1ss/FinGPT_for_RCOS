@@ -157,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
     advAskButton.addEventListener('click', get_adv_chat_response);
 
     // Add console.log for debugging
-    document.addEventListener('keyup', (event) => {
+    textbox.onmouseover('keyup', (event) => {
         console.log('KEY PRESSED IN GNEREAL OH MY GOD')
         console.log("Key pressed:", event.key); // Log key presses
 
