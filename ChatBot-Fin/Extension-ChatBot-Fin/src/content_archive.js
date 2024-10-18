@@ -157,10 +157,10 @@ document.addEventListener('DOMContentLoaded', () => {
     advAskButton.addEventListener('click', get_adv_chat_response);
 
     // Add console.log for debugging
-    textbox.addEventListener('keyup', function(event) {
+    textbox.addEventListener('keydown', function(event) {
         console.log("Key pressed:", event.key); // Log key presses
 
-        if (event.key === 'Enter') {
+        if (event.key === 'a') {
             event.preventDefault(); // Prevent the default form submit behavior
             const isAdvanced = event.shiftKey || event.altKey;
             console.log("Is advanced:", isAdvanced); // Check if shift or alt was pressed
@@ -178,7 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Ask button click
 function get_chat_response() {
-
+    console.log(textbox);
     const question = document.getElementById('textbox').value;
     console.log("Normal chat response triggered with question:", question);
 
