@@ -152,6 +152,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const advAskButton = document.getElementById('advAskButton');
     const textbox = document.getElementById('textbox');
 
+    if (!textbox) {
+        console.error('Textbox element not found');
+        return;
+    }
+    console.log('Textbox element found:', textbox);
+
     askButton.addEventListener('click', get_chat_response);
     advAskButton.addEventListener('click', get_adv_chat_response);
 
