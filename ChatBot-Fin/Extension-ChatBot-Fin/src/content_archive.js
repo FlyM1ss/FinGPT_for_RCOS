@@ -152,7 +152,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const advAskButton = document.getElementById('advAskButton');
     const textbox = document.getElementById('textbox');
 
+<<<<<<< Updated upstream
 
+=======
+    if (!textbox) {
+        console.error('Textbox element not found');
+        return;
+    }
+>>>>>>> Stashed changes
     console.log('Textbox element found');
 
     askButton.addEventListener('click', get_chat_response);
