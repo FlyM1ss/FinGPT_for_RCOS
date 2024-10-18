@@ -157,8 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
     advAskButton.addEventListener('click', get_adv_chat_response);
 
     // Add console.log for debugging
-    textbox.onmouseover('keyup', (event) => {
-        console.log('KEY PRESSED IN GNEREAL OH MY GOD')
+    textbox.addEventListener('keyup', function(event) {
         console.log("Key pressed:", event.key); // Log key presses
 
         if (event.key === 'Enter') {
@@ -179,7 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Ask button click
 function get_chat_response() {
-    console.log(textbox);
+
     const question = document.getElementById('textbox').value;
     console.log("Normal chat response triggered with question:", question);
 
