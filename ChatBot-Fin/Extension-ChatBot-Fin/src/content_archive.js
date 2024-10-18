@@ -157,11 +157,11 @@ document.addEventListener('DOMContentLoaded', () => {
     advAskButton.addEventListener('click', get_adv_chat_response);
 
     // Add console.log for debugging
-    textbox.addEventListener('keyup', (event) => {
+    document.addEventListener('keyup', (event) => {
         console.log('KEY PRESSED IN GNEREAL OH MY GOD')
         console.log("Key pressed:", event.key); // Log key presses
 
-        if (event.key === 'a') {
+        if (event.key === 'Enter') {
             event.preventDefault(); // Prevent the default form submit behavior
             const isAdvanced = event.shiftKey || event.altKey;
             console.log("Is advanced:", isAdvanced); // Check if shift or alt was pressed
