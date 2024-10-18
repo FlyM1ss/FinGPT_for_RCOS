@@ -149,6 +149,7 @@ function handleChatResponse(question, isAdvanced = false) {
 document.addEventListener('DOMContentLoaded', () => {
     // Move the variable declarations inside the DOMContentLoaded event
     const askButton = document.getElementById('askButton');
+    console.log("askButton", askButton);
     const advAskButton = document.getElementById('advAskButton');
     const textbox = document.getElementById('textbox');
 
