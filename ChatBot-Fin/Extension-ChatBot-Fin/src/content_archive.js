@@ -152,11 +152,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const advAskButton = document.getElementById('advAskButton');
     const textbox = document.getElementById('textbox');
 
-    if (!textbox) {
-        console.error('Textbox element not found');
-        return;
-    }
-    console.log('Textbox element found:', textbox);
+
+    console.log('Textbox element found');
 
     askButton.addEventListener('click', get_chat_response);
     advAskButton.addEventListener('click', get_adv_chat_response);
@@ -179,12 +176,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
+    console.log('After textbox event listener');
 });
 
 // Ask button click
 function get_chat_response() {
-    console.log("THIS IS RUNNING!!!!!!")
-    console.log(textbox)
+
     const question = document.getElementById('textbox').value;
     console.log("Normal chat response triggered with question:", question);
 
