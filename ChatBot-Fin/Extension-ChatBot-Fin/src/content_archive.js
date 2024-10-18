@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
     advAskButton.addEventListener('click', get_adv_chat_response);
 
     // Add console.log for debugging
-    textbox.addEventListener('keydown', function(event) {
+    textbox.addEventListener('keyup', function(event) {
         console.log("Key pressed:", event.key); // Log key presses
 
         if (event.key === 'Enter') {
