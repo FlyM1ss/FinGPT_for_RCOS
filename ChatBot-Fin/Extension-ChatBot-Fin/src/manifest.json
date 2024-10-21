@@ -12,7 +12,8 @@
       "matches": [
         "https://www.bloomberg.com/*",
         "https://finance.yahoo.com/*",
-        "https://cdm.finos.org/*"
+        "https://cdm.finos.org/*",
+        "https://www.sec.gov/*"
       ],
       "js": [
         "content_archive.js"
