@@ -96,7 +96,7 @@ def generate_answer(query, relevant_chunks, model_name):
     for chunk in relevant_chunks:
         context += f"File: {chunk['metadata']['file_path']}\nContent:\n{chunk['text']}\n\n"
 
-    prompt = f"""You are a CDM expert providing detailed and accurate answers.
+    prompt = f"""You are an expert on SEC regulations and corporate filings. Provide detailed, accurate and well-structured answers.
 
 Context:
 {context}
@@ -113,8 +113,8 @@ Answer as thoroughly as possible based on the context provided."""
             {'role': 'system', 'content': 'You are a CDM expert providing detailed and accurate answers.'},
             {'role': 'user', 'content': prompt}
         ],
-        temperature=0.1,  # Lower temperature for more precise answers
-        max_tokens=1500  # Adjust as necessary
+        temperature=0.1,
+        max_tokens=2048  # adjust as needed
     )
 
     answer = response['choices'][0]['message']['content']
