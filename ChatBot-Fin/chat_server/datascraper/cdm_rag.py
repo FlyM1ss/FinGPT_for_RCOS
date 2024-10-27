@@ -73,7 +73,7 @@ def embed_query(query, model="text-embedding-3-large"):
     )
     return response['data'][0]['embedding']
 
-def retrieve_chunks(query, index, embeddings, k=10):
+def retrieve_chunks(query, index, embeddings, k=5):
     """
     Retrieves the most relevant text chunks for a given query.
     """
