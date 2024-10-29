@@ -1,5 +1,5 @@
 // create and append elements for the chat
-function appendChatElement(parent, className, text) {
+export function appendChatElement(parent, className, text) {
     const element = document.createElement('span');
     element.className = className;
     element.innerText = text;
@@ -8,7 +8,7 @@ function appendChatElement(parent, className, text) {
 }
 
 // chat response
-function handleChatResponse(question, isAdvanced = false) {
+export function handleChatResponse(question, isAdvanced = false) {
     const startTime = performance.now();
     const responseContainer = document.getElementById('respons');
     const additionalResponseContainer = document.getElementById('additionalPopup').querySelector('#respons');

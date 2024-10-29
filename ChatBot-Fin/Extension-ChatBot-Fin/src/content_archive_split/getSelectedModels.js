@@ -4,12 +4,12 @@ const availableModels = ["gpt-4o", "gpt-3.5-turbo"];
 // Initialize model selection with gpt-4o as default
 let selectedModels = ['gpt-4o', 'gpt-3.5-turbo'];
 
-function getSelectedModels() {
+export function getSelectedModels() {
     // hard-coded atm
     return ['gpt-4o', 'gpt-3.5-turbo'];
 }
 // Model selection UI, I think, currently not in use
-function loadModelSelection() {
+export function loadModelSelection() {
     const modelButtons = document.querySelectorAll('.model-option');
 
     modelButtons.forEach(button => {
