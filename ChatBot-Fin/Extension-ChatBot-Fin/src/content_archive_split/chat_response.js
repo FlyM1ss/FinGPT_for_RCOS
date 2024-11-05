@@ -1,3 +1,5 @@
+import { handleChatResponse, appendChatElement } from './content_archive_split/chat_response.js';
+
 // create and append elements for the chat
 export function appendChatElement(parent, className, text) {
     const element = document.createElement('span');

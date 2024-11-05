@@ -1,3 +1,5 @@
+import { handleChatResponse, appendChatElement } from './content_archive_split/chat_response.js';
+
 document.addEventListener('DOMContentLoaded', () => {
     // Move the variable declarations inside the DOMContentLoaded event
     const askButton = document.getElementById('askButton');
