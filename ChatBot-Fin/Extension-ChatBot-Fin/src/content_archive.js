@@ -361,6 +361,13 @@ textbox.placeholder = "Type your question here...";
 
 inputContainer.appendChild(textbox);
 
+// Bind Enter key to get_chat_response()
+textbox.addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+        get_chat_response();
+    }
+});
+
 const buttonContainer = document.createElement('div');
 buttonContainer.id = "buttonContainer";
 
