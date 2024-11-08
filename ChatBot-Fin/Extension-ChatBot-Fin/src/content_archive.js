@@ -128,9 +128,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-
-
-
 // Main popup
 const popup = document.createElement('div');
 popup.id = "draggableElement";
@@ -252,7 +249,6 @@ popup.appendChild(content);
 popup.appendChild(buttonRow);
 popup.appendChild(inputContainer);
 popup.appendChild(buttonContainer);
-
 
 // Additional popup
 const additionalPopup = document.createElement('div');
