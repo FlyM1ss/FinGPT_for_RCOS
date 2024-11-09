@@ -6,6 +6,7 @@
         "query" : true,
         "query_data" : "What is the implied volatility of SPY today?",
         "response_data" : "gpt-4o: Failed to get response",
+        "response_time" : 1024,
         "created_at" : "2024-11-01T17:35:30Z"
     }
 ]
