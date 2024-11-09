@@ -98,13 +98,13 @@ function handleChatResponse(question, isAdvanced = false) {
             if (mainResponse.startsWith("The following file(s) are missing")) {
                 mainLoadingElement.innerText = `${selectedModels[0]}: Error - ${mainResponse}`;
             } else {
-                mainLoadingElement.innerText = `${selectedModels[0]}: ${mainResponse}`;
+                mainLoadingElement.innerText = `FinGPT Model #1: ${mainResponse}`;
             }
 
             if (additionalResponse.startsWith("The following file(s) are missing")) {
                 additionalLoadingElement.innerText = `${selectedModels[1]}: Error - ${additionalResponse}`;
             } else {
-                additionalLoadingElement.innerText = `${selectedModels[1]}: ${additionalResponse}`;
+                additionalLoadingElement.innerText = `FinGPT Model #2: ${additionalResponse}`;
             }
 
             document.getElementById('textbox').value = '';
@@ -411,7 +411,7 @@ additionalHeader.id = "additionalHeader";
 additionalHeader.className = "draggable";
 
 const additionalTitle = document.createElement('span');
-additionalTitle.innerText = "gpt-3.5-turbo Response";
+additionalTitle.innerText = "FinGPT Model #2";
 
 additionalHeader.appendChild(additionalTitle);
 additionalPopup.appendChild(additionalHeader);
