@@ -58,6 +58,8 @@ export function getChatResponse(question, callback) {
             const responseTime = endTime - startTime;
             console.log(`Time taken for response: ${responseTime} ms`); // Log the response time
 
+            //Database call?
+
             response.removeChild(loading);
             callback(data);
         });
@@ -82,6 +84,8 @@ export function getAdvChatResponse(question, callback) {
             const endTime = performance.now(); // End timing
             const responseTime = endTime - startTime;
             console.log(`Time taken for response: ${responseTime} ms`); // Log the response time
+
+            //Database call?
 
             response.removeChild(loading);
             callback(data);
