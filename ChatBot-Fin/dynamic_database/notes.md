@@ -18,3 +18,6 @@ Data format:
         "created_at" : [datetime]
     }
 ]
+
+Database call under /ChatBot-Fin/chat_server/chat_server_app/views.py or /ChatBot-Fin/Extension-ChatBot-Fin/content_archive.js
+I am more familiar with usage in Python so I will write the code there.
