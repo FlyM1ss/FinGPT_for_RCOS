@@ -16,6 +16,7 @@ message_list = [
      "content": "You are a helpful financial assistant. Always answer questions to the best of your ability."},
 ]
 
+mongostring = "mongodb+srv://christian-sandoval:RCOS2024@fingpt-search-agent.rw0u7.mongodb.net/?retryWrites=true&w=majority&appName=FinGPT-Search-Agent"
 
 # View to return a random number as JSON
 def Get_A_Number(request):
@@ -157,6 +158,7 @@ def get_logo(request):
 
 # log questions
 def log_question(request):
+    client = MongoClient(mongostring)
     question = request.GET.get('question', '')
     button_clicked = request.GET.get('button', '')
     current_url = request.GET.get('current_url', '')
