@@ -7,41 +7,14 @@ const encodedContent = encodeURIComponent(textContent);
 // Available models
 const availableModels = ["gpt-4o", "gpt-3.5-turbo"];
 
-// Initialize model selection with gpt-4o as default
+// Initialize model selection with gpt-4o and gpt-3.5-turbo as default
 let selectedModels = ['gpt-4o', 'gpt-3.5-turbo'];
 
 function getSelectedModels() {
-    return selectedModels;  // Now returns the actual selected models
+    return selectedModels;
 }
 
-// Model selection UI, I think, currently not in use
-function loadModelSelection() {
-    const modelButtons = document.querySelectorAll('.model-option');
-
-    modelButtons.forEach(button => {
-        const modelName = button.dataset.model;
-
-        // Default is gpt-4o
-        if (modelName === 'gpt-4o') {
-            button.classList.add('selected');
-        }
-
-        button.addEventListener('click', () => {
-            if (button.classList.contains('selected')) {
-                button.classList.remove('selected');
-                selectedModels = selectedModels.filter(model => model !== modelName);
-            } else {
-                if (selectedModels.length < 2) {
-                    button.classList.add('selected');
-                    selectedModels.push(modelName);
-                } else {
-                    alert('You can only select up to 2 models.');
-                }
-            }
-        });
-    });
-}
-
+// Fetch the text content
 fetch(`http://127.0.0.1:8000/input_webtext/?textContent=${encodedContent}`, { method: "POST" })
     .then(response => {
         if (!response.ok) {
@@ -56,7 +29,7 @@ fetch(`http://127.0.0.1:8000/input_webtext/?textContent=${encodedContent}`, { me
         console.error('There was a problem with your fetch operation:', error);
     });
 
-// create and append elements for the chat
+// Function to create and append chat elements
 function appendChatElement(parent, className, text) {
     const element = document.createElement('span');
     element.className = className;
@@ -65,7 +38,7 @@ function appendChatElement(parent, className, text) {
     return element;
 }
 
-// chat response
+// Function to handle chat responses
 function handleChatResponse(question, isAdvanced = false) {
     const startTime = performance.now();
     const responseContainer = document.getElementById('respons');
@@ -118,52 +91,7 @@ function handleChatResponse(question, isAdvanced = false) {
         });
 }
 
-
-
-
-
-
-
-// additional popup for the second model
-// function createAdditionalPopup(modelName) {
-//     const additionalPopup = document.createElement('div');
-//     additionalPopup.id = "additionalPopup";
-//     additionalPopup.classList.add('additional-popup');  // Use a different class for styling
-//
-//     const header = document.createElement('div');
-//     header.id = "header";
-//     header.className = "draggable";
-//
-//     const title = document.createElement('span');
-//     title.innerText = `${modelName} Response`;
-//
-//     header.appendChild(title);
-//     additionalPopup.appendChild(header);
-//
-//     const content = document.createElement('div');
-//     content.id = "content";
-//
-//     // const introText = document.createElement('p');
-//     // introText.innerText = "Response from " + modelName;
-//     // content.appendChild(introText);
-//
-//     const responseContainer = document.createElement('div');
-//     responseContainer.id = "respons";
-//     responseContainer.innerText = `${modelName}: Loading...`;
-//
-//     content.appendChild(responseContainer);
-//     additionalPopup.appendChild(content);
-//
-//     document.body.appendChild(additionalPopup);
-//
-//     const mainPopup = document.getElementById('draggableElement');
-//     const rect = mainPopup.getBoundingClientRect();
-//     additionalPopup.style.position = "absolute";
-//     additionalPopup.style.top = `${rect.top}px`;
-//     additionalPopup.style.left = `${rect.right + 20}px`;
-// }
-
-// Ask button click
+// Function to get chat response on Ask button click
 function get_chat_response() {
     const question = document.getElementById('textbox').value;
 
@@ -178,7 +106,7 @@ function get_chat_response() {
 
 let searchQuery = '';
 
-// Advanced Ask button click
+// Function to get advanced chat response on Advanced Ask button click
 function get_adv_chat_response() {
     const question = document.getElementById('textbox').value;
 
@@ -191,6 +119,7 @@ function get_adv_chat_response() {
     }
 }
 
+// Function to clear chat
 function clear() {
     const response = document.getElementById('respons');
     const sourceurls = document.getElementById('source_urls');
@@ -254,7 +183,7 @@ function get_sources(search_query) {
         });
 }
 
-// log question
+// Function to log question
 function logQuestion(question, button) {
     const currentUrl = window.location.href;
 
@@ -270,13 +199,6 @@ function logQuestion(question, button) {
             console.error('Error logging question:', error);
         });
 }
-
-
-
-
-
-
-
 
 // Main popup
 const popup = document.createElement('div');
@@ -320,8 +242,10 @@ minimizeIcon.onclick = function() {
 const closeIcon = document.createElement('span');
 closeIcon.innerText = "❌";
 closeIcon.className = "icon";
-closeIcon.onclick = function() { popup.style.display = 'none';
-                                additionalPopup.style.display = 'none';};
+closeIcon.onclick = function() { 
+    popup.style.display = 'none';
+    additionalPopup.style.display = 'none';
+};
 
 iconContainer.appendChild(settingsIcon);
 iconContainer.appendChild(minimizeIcon);
@@ -407,7 +331,6 @@ popup.appendChild(buttonRow);
 popup.appendChild(inputContainer);
 popup.appendChild(buttonContainer);
 
-
 // Additional popup
 const additionalPopup = document.createElement('div');
 additionalPopup.id = "additionalPopup";
@@ -431,13 +354,6 @@ additionalResponseContainer.id = "respons";
 additionalContent.appendChild(additionalResponseContainer);
 
 additionalPopup.appendChild(additionalContent);
-document.body.appendChild(additionalPopup);
-
-// Position the additional popup next to the main popup
-const rect = popup.getBoundingClientRect();
-additionalPopup.style.position = "absolute";
-additionalPopup.style.top = `${rect.top}px`;
-additionalPopup.style.left = `${rect.right + 20}px`;
 
 // Settings Window
 const settings_window = document.createElement('div');
@@ -474,7 +390,7 @@ const modelSelectionContent = document.createElement('div');
 modelSelectionContent.id = "model_selection_content";
 modelSelectionContent.style.display = "none";
 
-// handle model selection
+// Handle model selection
 function handleModelSelection(modelItem, modelName) {
     if (selectedModels.includes(modelName)) {
         // Deselect
@@ -498,7 +414,7 @@ availableModels.forEach(model => {
     modelItem.className = 'model-selection-item';
     modelItem.innerText = model;
 
-    // default selected models
+    // Default selected models
     if (selectedModels.includes(model)) {
         modelItem.classList.add('selected-model');
     }
@@ -607,7 +523,6 @@ preferredLinksContainer.appendChild(preferredLinksContent);
 settings_window.appendChild(preferredLinksContainer);
 settings_window.appendChild(ragLabel);
 
-
 document.body.appendChild(settings_window);
 
 // Toggle Preferred Links Section
@@ -634,7 +549,6 @@ settingsIcon.onclick = function() {
     }
 };
 
-
 // Close settings popup when clicks outside
 document.addEventListener('click', function(event) {
     const settingsWindow = document.getElementById('settings_window');
@@ -642,7 +556,6 @@ document.addEventListener('click', function(event) {
         settingsWindow.style.display = 'none';
     }
 });
-
 
 // Sources Window
 const sources_window = document.createElement('div');
@@ -667,7 +580,7 @@ sourcesHeader.appendChild(sourcesCloseIcon);
 const loadingSpinner = document.createElement('div');
 loadingSpinner.id = "loading_spinner";
 loadingSpinner.className = "spinner";
-loadingSpinner.style.display = 'none'; // hide loading initially
+loadingSpinner.style.display = 'none'; // Hide loading initially
 
 const source_urls = document.createElement('ul');
 source_urls.id = "source_urls";
@@ -680,6 +593,25 @@ sources_window.appendChild(source_urls);
 document.body.appendChild(sources_window);
 document.body.appendChild(popup);
 document.body.appendChild(additionalPopup);
+
+// Set initial positions for the main popup
+popup.style.position = "absolute";
+popup.style.top = "10%";
+popup.style.left = "10%";
+popup.style.width = '450px';
+popup.style.height = '650px';
+
+// Set initial styles for the additional popup
+additionalPopup.style.position = "absolute";
+additionalPopup.style.width = '450px';
+additionalPopup.style.height = '650px';
+
+// Position the additional popup next to the main popup after rendering
+setTimeout(() => {
+    const rect = popup.getBoundingClientRect();
+    additionalPopup.style.top = `${rect.top}px`;
+    additionalPopup.style.left = `${rect.right + 20}px`;
+}, 0);
 
 let offsetX, offsetY, startX, startY, startWidth, startHeight;
 let sourceWindowOffsetX = 10;
@@ -723,12 +655,12 @@ function makeDraggableAndResizable(element) {
         element.style.left = `${newX}px`;
         element.style.top = `${newY}px`;
 
-        // move sources window with main popup
+        // Move sources window with main popup
         const sourcesWindow = document.getElementById('sources_window');
         sourcesWindow.style.left = `${newX + element.offsetWidth + sourceWindowOffsetX}px`;
         sourcesWindow.style.top = `${newY}px`;
 
-        // move additional popup with main popup
+        // Move additional popup with main popup
         const additionalPopup = document.getElementById('additionalPopup');
         if (additionalPopup) {
             additionalPopup.style.left = `${newX + element.offsetWidth + 20}px`;
@@ -747,11 +679,11 @@ function makeDraggableAndResizable(element) {
             element.style.height = `${newHeight}px`;
         }
 
-        // move sources window with main popup
+        // Move sources window with main popup
         const sourcesWindow = document.getElementById('sources_window');
         sourcesWindow.style.left = `${element.offsetLeft + element.offsetWidth + sourceWindowOffsetX}px`;
 
-        // move additional popup with main popup
+        // Move additional popup with main popup
         const additionalPopup = document.getElementById('additionalPopup');
         if (additionalPopup) {
             additionalPopup.style.left = `${element.offsetLeft + element.offsetWidth + 20}px`;

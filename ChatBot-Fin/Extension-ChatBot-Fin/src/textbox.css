@@ -4,8 +4,7 @@
     position: absolute;
     width: 450px;
     height: 650px;
-    top: 10%;
-    left: 10%;
+    /* Removed top and left properties */
     background-color: #333;
     border-radius: 15px;
     box-shadow: 5px 0px 10px black;
@@ -438,7 +437,7 @@
     position: absolute;
     width: 450px;
     height: 650px;
-    top: 10%;
+    /* Removed top and left properties */
     background-color: #333;
     border-radius: 15px;
     box-shadow: 5px 0px 10px black;
