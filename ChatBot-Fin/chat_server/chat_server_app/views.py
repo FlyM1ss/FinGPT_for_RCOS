@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import JsonResponse
+from pymongo import MongoClient
 import json
 import random  # Import 'random' for 'randint'
 from datascraper import datascraper as ds
