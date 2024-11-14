@@ -10,6 +10,7 @@ import os
 import csv
 import request
 from transformers import AutoTokenizer, AutoModelForCausalLM
+import datetime
 
 message_list = [
     {"role": "system",
@@ -47,12 +48,19 @@ def Get_A_Number(request):
 
 # Ask button
 def chat_response(request):
+    # Set up database connection
+    client = MongoClient(mongostring)
+    db = client["dev"]
+    data = db["user-data"]
+
     question = request.GET.get('question', '')
     selected_models = request.GET.get('models', 'gpt-4o,gpt-3.5-turbo')
     models = selected_models.split(',')
     use_rag = request.GET.get('use_rag', 'false').lower() == 'true'
 
     responses = {}
+
+    start = datetime.datetime.now()
 
     for model in models:
         if use_rag:
@@ -69,19 +77,38 @@ def chat_response(request):
     #     else:
     #         # Use GPT-4o or other OpenAI models
     #         responses[model] = ds.create_response(question, message_list.copy(), model)
+    
+    end = datetime.datetime.now()
+    ms = int((end - start).total_seconds()*1000)
 
+    # Find and place the response into existing entry
+    for entry in data:
+        if(entry["query_data"] == question):
+            entry["response_data"] = responses
+            entry["response_time"] = ms
+            entry["created_at"] = end
+            break
+    # Close connection
+    client.close()
     return JsonResponse({'resp': responses})
 
 
 # Advanced Ask Button
 @csrf_exempt
 def adv_response(request):
+    # Set up database connection
+    client = MongoClient(mongostring)
+    db = client["dev"]
+    data = db["user-data"]
+        
     question = request.GET.get('question', '')
     selected_models = request.GET.get('models', 'gpt-4o,gpt-3.5-turbo')
     models = selected_models.split(',')
     use_rag = request.GET.get('use_rag', 'false').lower() == 'true'
 
     responses = {}
+
+    start = datetime.datetime.now()
 
     for model in models:
         if use_rag:
@@ -98,7 +125,19 @@ def adv_response(request):
     #     else:
     #         # Use GPT-4o or other OpenAI models for advanced response
     #         responses[model] = ds.create_advanced_response(question, message_list.copy(), model)
+    
+    end = datetime.datetime.now()
+    ms = int((end - start).total_seconds()*1000)
 
+    # Find and place the response into existing entry
+    for entry in data:
+        if(entry["query_data"] == question):
+            entry["response_data"] = responses
+            entry["response_time"] = ms
+            entry["created_at"] = end
+            break
+    # Close connection
+    client.close()
     return JsonResponse({'resp': responses})
 
 
@@ -159,15 +198,20 @@ def get_logo(request):
 # log questions
 def log_question(request):
     client = MongoClient(mongostring)
+    db = client["dev"]
+    data = db["user-data"]
     question = request.GET.get('question', '')
     button_clicked = request.GET.get('button', '')
     current_url = request.GET.get('current_url', '')
+
+    entry = {"webpage" : "", "button" : "", "query" : False, "query_data" : "", "response_data" : "", "response_time" : "", "created_at" : ""}
 
     # tmp PATH
     log_path = os.path.join(os.path.dirname(__file__), 'questionLog.csv')
 
     file_exists = os.path.isfile(log_path)
-
+    entry["webpage"] = current_url
+    entry["button"] = button_clicked
     if question and button_clicked and current_url:
         # Check if the same question has already been asked on the same URL
         question_exists = False
@@ -180,12 +224,16 @@ def log_question(request):
                         break
 
         if not question_exists:
+            entry["query"] = True
+            entry["query_data"] = question
+            
             with open(log_path, 'a', newline='') as log_file:
                 writer = csv.writer(log_file)
                 if not file_exists:
                     writer.writerow(['Button', 'URL', 'Question'])
                 writer.writerow([button_clicked, current_url, question])
-
+    data.insert_one(entry)
+    client.close()
     return JsonResponse({'status': 'success'})
 
 
