@@ -212,23 +212,20 @@ def process_uploaded_file(file_path, text_prompt):
             print(error_msg)
             return error_msg
 
-        # Read and encode the image in base64
-        with open(file_path, 'rb') as image_file:
-            encoded_image = base64.b64encode(image_file.read()).decode('utf-8')
+        # Construct the raw GitHub URL
+        username = 'FlyM1ss'
+        repository = 'FinGPT_for_RCOS'
+        branch = 'fingpt_for_sec'
+        # Adjust the path_to_file if necessary
+        path_to_file = os.path.relpath(file_path).replace('\\', '/')
+
+        image_url = f'https://raw.githubusercontent.com/{username}/{repository}/{branch}/{path_to_file}'
 
         # Prepare the messages
         messages = [
             {
                 "role": "user",
-                "content": [
-                    { "type": "text", "text": text_prompt },
-                    {
-                        "type": "image",
-                        "image": {
-                            "base64": encoded_image,
-                        },
-                    }
-                ],
+                "content": f"{text_prompt}\n\nPlease analyze the following image:\n{image_url}",
             },
         ]
 
@@ -246,10 +243,7 @@ def process_uploaded_file(file_path, text_prompt):
     except Exception as e:
         print(f"Error processing image with GPT-4o: {e}")
         return f"An error occurred while processing the image: {e}"
-    finally:
-        # Cleanup
-        if os.path.exists(file_path):
-            os.remove(file_path)
+
 
 def get_sources(query):
     """
