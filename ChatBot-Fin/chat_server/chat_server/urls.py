@@ -16,6 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
 from chat_server_app import views
 
 urlpatterns = [
@@ -29,5 +31,6 @@ urlpatterns = [
     path('log_question/', views.log_question, name='log_question'),
     path('api/get_preferred_urls/', views.get_preferred_urls, name='get_preferred_urls'),
     path('api/add_preferred_url/', views.add_preferred_url, name='add_preferred_url'),
+    path('upload_file/', views.upload_file, name='upload_file')
 
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

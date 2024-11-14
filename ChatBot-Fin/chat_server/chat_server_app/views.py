@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import JsonResponse
+from django.conf import settings
 import json
 import random  # Import 'random' for 'randint'
 from datascraper import datascraper as ds
@@ -7,8 +8,10 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 import os
 import csv
+import traceback
 import request
 from transformers import AutoTokenizer, AutoModelForCausalLM
+
 
 message_list = [
     {"role": "system",
@@ -126,6 +129,33 @@ def add_webtext(request):
 
     # return JsonResponse({'resp1': text})
 
+@csrf_exempt
+def upload_file(request):
+    if request.method == 'POST':
+        try:
+            text_prompt = request.POST.get('prompt', '')
+            if 'file' not in request.FILES:
+                return JsonResponse({'status': 'fail', 'message': 'No file part'})
+            file = request.FILES['file']
+            if file.name == '':
+                return JsonResponse({'status': 'fail', 'message': 'No selected file'})
+            # Save the file
+            upload_dir = os.path.join(settings.BASE_DIR, 'uploads')
+            os.makedirs(upload_dir, exist_ok=True)
+            file_path = os.path.join(upload_dir, file.name)
+            with open(file_path, 'wb+') as destination:
+                for chunk in file.chunks():
+                    destination.write(chunk)
+            # Process the file
+            description = ds.process_uploaded_file(file_path, text_prompt)
+            if description is None:
+                return JsonResponse({'status': 'fail', 'message': 'Processing failed.'})
+            return JsonResponse({'status': 'success', 'description': description})
+        except Exception as e:
+            traceback.print_exc()
+            return JsonResponse({'status': 'fail', 'message': f'An error occurred: {str(e)}'})
+    else:
+        return JsonResponse({'status': 'fail', 'message': 'Invalid request method'})
 
 @csrf_exempt
 def clear(request):

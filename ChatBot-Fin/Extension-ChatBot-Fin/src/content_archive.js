@@ -119,50 +119,6 @@ function handleChatResponse(question, isAdvanced = false) {
 }
 
 
-
-
-
-
-
-// additional popup for the second model
-// function createAdditionalPopup(modelName) {
-//     const additionalPopup = document.createElement('div');
-//     additionalPopup.id = "additionalPopup";
-//     additionalPopup.classList.add('additional-popup');  // Use a different class for styling
-//
-//     const header = document.createElement('div');
-//     header.id = "header";
-//     header.className = "draggable";
-//
-//     const title = document.createElement('span');
-//     title.innerText = `${modelName} Response`;
-//
-//     header.appendChild(title);
-//     additionalPopup.appendChild(header);
-//
-//     const content = document.createElement('div');
-//     content.id = "content";
-//
-//     // const introText = document.createElement('p');
-//     // introText.innerText = "Response from " + modelName;
-//     // content.appendChild(introText);
-//
-//     const responseContainer = document.createElement('div');
-//     responseContainer.id = "respons";
-//     responseContainer.innerText = `${modelName}: Loading...`;
-//
-//     content.appendChild(responseContainer);
-//     additionalPopup.appendChild(content);
-//
-//     document.body.appendChild(additionalPopup);
-//
-//     const mainPopup = document.getElementById('draggableElement');
-//     const rect = mainPopup.getBoundingClientRect();
-//     additionalPopup.style.position = "absolute";
-//     additionalPopup.style.top = `${rect.top}px`;
-//     additionalPopup.style.left = `${rect.right + 20}px`;
-// }
-
 // Ask button click
 function get_chat_response() {
     const question = document.getElementById('textbox').value;
@@ -190,6 +146,48 @@ function get_adv_chat_response() {
         alert("Please enter a question.");
     }
 }
+
+// Handle File Upload Function
+function handleFileUpload() {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = '*/*'; // Accept all file types
+    fileInput.onchange = function() {
+        const file = fileInput.files[0];
+        if (file) {
+            // Create FormData to send the file and prompt
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('text_prompt', 'Describe this image.');
+
+            // Send the file to the backend
+            fetch('http://127.0.0.1:8000/upload_file/', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert('File uploaded successfully.');
+                        if (data.description) {
+                            const responseContainer = document.getElementById('respons');
+                            const responseDiv = document.createElement('div');
+                            responseDiv.className = 'agent_response';
+                            responseDiv.innerText = data.description;
+                            responseContainer.appendChild(responseDiv);
+                        }
+                    } else {
+                        alert('File upload failed.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error uploading file:', error);
+                });
+        }
+    };
+    fileInput.click();
+}
+
 
 function clear() {
     const response = document.getElementById('respons');
@@ -351,14 +349,23 @@ const responseContainer = document.createElement('div');
 responseContainer.id = "respons";
 content.appendChild(responseContainer);
 
+// Input container
 const inputContainer = document.createElement('div');
 inputContainer.id = "inputContainer";
 
+// Upload Button
+const uploadButton = document.createElement('button');
+uploadButton.id = 'uploadButton';
+uploadButton.innerText = '+';
+uploadButton.onclick = handleFileUpload;
+
+// Textbox
 const textbox = document.createElement("input");
 textbox.type = "text";
 textbox.id = "textbox";
 textbox.placeholder = "Type your question here...";
 
+inputContainer.appendChild(uploadButton);
 inputContainer.appendChild(textbox);
 
 const buttonContainer = document.createElement('div');

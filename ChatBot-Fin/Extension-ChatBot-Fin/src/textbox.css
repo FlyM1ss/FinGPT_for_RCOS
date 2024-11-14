@@ -115,6 +115,24 @@
     box-shadow: none;
 }
 
+/* Upload Button */
+#uploadButton {
+    background-color: transparent;
+    border: none;
+    color: white;
+    font-size: 1.5em;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+#uploadButton:hover {
+    color: #1abc9c;
+}
+
+
+
+
+
 #buttonContainer {
     display: flex;
     justify-content: center;
