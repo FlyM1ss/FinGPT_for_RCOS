@@ -63,12 +63,13 @@ def chat_response(request):
     start = datetime.datetime.now()
 
     for model in models:
-        if use_rag:
-            # Use the RAG pipeline
-            responses[model] = ds.create_rag_response(question, message_list.copy(), model)
-        else:
-            # Use regular response
-            responses[model] = ds.create_response(question, message_list.copy(), model)
+        if model != "gemma-2b":
+            if use_rag:
+                # Use the RAG pipeline
+                responses[model] = ds.create_rag_response(question, message_list.copy(), model)
+            else:
+                # Use regular response
+                responses[model] = ds.create_response(question, message_list.copy(), model)
 
     # for model in models:
     #     if model == "gemma-2b":
@@ -82,12 +83,7 @@ def chat_response(request):
     ms = int((end - start).total_seconds()*1000)
 
     # Find and place the response into existing entry
-    for entry in data:
-        if(entry["query_data"] == question):
-            entry["response_data"] = responses
-            entry["response_time"] = ms
-            entry["created_at"] = end
-            break
+    data.update_one({"query_data" : question}, {"$set" : {"response_data" : responses, "response_time" : ms, "created_at" : end}})
     # Close connection
     client.close()
     return JsonResponse({'resp': responses})
