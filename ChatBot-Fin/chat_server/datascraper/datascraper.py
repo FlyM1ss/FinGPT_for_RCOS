@@ -12,7 +12,7 @@ import torch
 from . import cdm_rag
 
 load_dotenv()
-api_key = os.getenv("API_KEY7")
+api_key = os.getenv("API_KEY7") 
 
 
 def data_scrape(url, timeout=2):
