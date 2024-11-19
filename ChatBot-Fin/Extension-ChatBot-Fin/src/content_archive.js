@@ -91,12 +91,8 @@ function handleChatResponse(question, isAdvanced = false) {
         });
 }
 
-<<<<<<< HEAD
 
 // Ask button click
-=======
-// Function to get chat response on Ask button click
->>>>>>> main
 function get_chat_response() {
     const question = document.getElementById('textbox').value;
 
@@ -111,7 +107,6 @@ function get_chat_response() {
 
 let searchQuery = '';
 
-<<<<<<< HEAD
 // Advanced Ask button click
 // function get_adv_chat_response() {
 //     const question = document.getElementById('textbox').value;
@@ -124,11 +119,6 @@ let searchQuery = '';
 //         alert("Please enter a question.");
 //     }
 // }
-=======
-// Function to get advanced chat response on Advanced Ask button click
-function get_adv_chat_response() {
-    const question = document.getElementById('textbox').value;
->>>>>>> main
 
 
 function get_adv_chat_response() {
@@ -169,7 +159,6 @@ function get_adv_chat_response() {
     document.getElementById('textbox').value = '';
 }
 
-<<<<<<< HEAD
 
 
 // Handle File Upload Function
@@ -214,9 +203,6 @@ function get_adv_chat_response() {
 // }
 
 
-=======
-// Function to clear chat
->>>>>>> main
 function clear() {
     const response = document.getElementById('respons');
     const sourceurls = document.getElementById('source_urls');
@@ -458,7 +444,6 @@ popup.appendChild(buttonRow);
 popup.appendChild(inputContainer);
 popup.appendChild(buttonContainer);
 
-<<<<<<< HEAD
 
 
 // Function to handle image response
@@ -484,8 +469,6 @@ toggleSwitchInput.addEventListener('change', function() {
 });
 
 
-=======
->>>>>>> main
 // Additional popup
 const additionalPopup = document.createElement('div');
 additionalPopup.id = "additionalPopup";
