@@ -1,3 +1,5 @@
+// content_archive.js
+
 const currentUrl = window.location.href.toString();
 console.log(currentUrl);
 
@@ -91,7 +93,6 @@ function handleChatResponse(question, isAdvanced = false) {
         });
 }
 
-
 // Ask button click
 function get_chat_response() {
     const question = document.getElementById('textbox').value;
@@ -108,19 +109,6 @@ function get_chat_response() {
 let searchQuery = '';
 
 // Advanced Ask button click
-// function get_adv_chat_response() {
-//     const question = document.getElementById('textbox').value;
-//
-//     if (question) {
-//         handleChatResponse(question, true);
-//         logQuestion(question, 'Advanced Ask');
-//         document.getElementById('textbox').value = '';
-//     } else {
-//         alert("Please enter a question.");
-//     }
-// }
-
-
 function get_adv_chat_response() {
     const question = document.getElementById('textbox').value.trim();
 
@@ -128,8 +116,6 @@ function get_adv_chat_response() {
         alert("Please enter a message.");
         return;
     }
-
-    const isImageMode = toggleSwitchInput.checked;
 
     if (isImageMode) {
         // Image Processing Mode
@@ -159,49 +145,18 @@ function get_adv_chat_response() {
     document.getElementById('textbox').value = '';
 }
 
+// Function to handle image response
+function handleImageResponse(question, description) {
+    const responseContainer = document.getElementById('respons');
+    appendChatElement(responseContainer, 'your_question', question);
 
+    const responseDiv = document.createElement('div');
+    responseDiv.className = 'agent_response';
+    responseDiv.innerText = description;
+    responseContainer.appendChild(responseDiv);
 
-// Handle File Upload Function
-// function handleFileUpload() {
-//     const fileInput = document.createElement('input');
-//     fileInput.type = 'file';
-//     fileInput.accept = '*/*'; // Accept all file types
-//     fileInput.onchange = function() {
-//         const file = fileInput.files[0];
-//         if (file) {
-//             // Create FormData to send the file and prompt
-//             const formData = new FormData();
-//             formData.append('file', file);
-//             formData.append('text_prompt', 'Describe this image.');
-//
-//             // Send the file to the backend
-//             fetch('http://127.0.0.1:8000/upload_file/', {
-//                 method: 'POST',
-//                 body: formData
-//             })
-//                 .then(response => response.json())
-//                 .then(data => {
-//                     if (data.status === 'success') {
-//                         alert('File uploaded successfully.');
-//                         if (data.description) {
-//                             const responseContainer = document.getElementById('respons');
-//                             const responseDiv = document.createElement('div');
-//                             responseDiv.className = 'agent_response';
-//                             responseDiv.innerText = data.description;
-//                             responseContainer.appendChild(responseDiv);
-//                         }
-//                     } else {
-//                         alert('File upload failed.');
-//                     }
-//                 })
-//                 .catch(error => {
-//                     console.error('Error uploading file:', error);
-//                 });
-//         }
-//     };
-//     fileInput.click();
-// }
-
+    responseContainer.scrollTop = responseContainer.scrollHeight;
+}
 
 function clear() {
     const response = document.getElementById('respons');
@@ -362,30 +317,24 @@ content.appendChild(responseContainer);
 const inputContainer = document.createElement('div');
 inputContainer.id = "inputContainer";
 
-// Upload Button
-// const uploadButton = document.createElement('button');
-// uploadButton.id = 'uploadButton';
-// uploadButton.innerText = '+';
-// uploadButton.onclick = handleFileUpload;
+// Create mode buttons
+const modeButtonsContainer = document.createElement('div');
+modeButtonsContainer.id = 'modeButtonsContainer';
 
-// Add a toggle switch in the input container
-// Create the toggle switch elements
-const toggleSwitchLabel = document.createElement('label');
-toggleSwitchLabel.className = 'switch';
+const textModeButton = document.createElement('button');
+textModeButton.id = 'textModeButton';
+textModeButton.innerText = 'Text Mode';
+textModeButton.classList.add('mode-button', 'active-mode');
 
-const toggleSwitchInput = document.createElement('input');
-toggleSwitchInput.type = 'checkbox';
-toggleSwitchInput.id = 'modeSwitch';
+const imageModeButton = document.createElement('button');
+imageModeButton.id = 'imageModeButton';
+imageModeButton.innerText = 'Image Mode';
+imageModeButton.classList.add('mode-button');
 
-const toggleSwitchSpan = document.createElement('span');
-toggleSwitchSpan.className = 'slider';
+modeButtonsContainer.appendChild(textModeButton);
+modeButtonsContainer.appendChild(imageModeButton);
 
-toggleSwitchLabel.appendChild(toggleSwitchInput);
-toggleSwitchLabel.appendChild(toggleSwitchSpan);
-
-const modeLabel = document.createElement('span');
-modeLabel.id = 'modeLabel';
-modeLabel.innerText = 'Text Mode';
+inputContainer.appendChild(modeButtonsContainer);
 
 // Textbox
 const textbox = document.createElement("input");
@@ -393,9 +342,6 @@ textbox.type = "text";
 textbox.id = "textbox";
 textbox.placeholder = "Type your question here...";
 
-// inputContainer.appendChild(uploadButton);
-inputContainer.appendChild(toggleSwitchLabel);
-inputContainer.appendChild(modeLabel);
 inputContainer.appendChild(textbox);
 
 // Bind Enter key to get_chat_response()
@@ -403,6 +349,21 @@ textbox.addEventListener("keydown", function(event) {
     if (event.key === "Enter") {
         get_chat_response();
     }
+});
+
+// Initialize isImageMode
+let isImageMode = false;
+
+textModeButton.addEventListener('click', function() {
+    isImageMode = false;
+    textModeButton.classList.add('active-mode');
+    imageModeButton.classList.remove('active-mode');
+});
+
+imageModeButton.addEventListener('click', function() {
+    isImageMode = true;
+    imageModeButton.classList.add('active-mode');
+    textModeButton.classList.remove('active-mode');
 });
 
 const buttonContainer = document.createElement('div');
@@ -443,31 +404,6 @@ popup.appendChild(content);
 popup.appendChild(buttonRow);
 popup.appendChild(inputContainer);
 popup.appendChild(buttonContainer);
-
-
-
-// Function to handle image response
-function handleImageResponse(question, description) {
-    const responseContainer = document.getElementById('respons');
-    appendChatElement(responseContainer, 'your_question', question);
-
-    const responseDiv = document.createElement('div');
-    responseDiv.className = 'agent_response';
-    responseDiv.innerText = description;
-    responseContainer.appendChild(responseDiv);
-
-    responseContainer.scrollTop = responseContainer.scrollHeight;
-}
-
-// Update the mode label when the switch is toggled
-toggleSwitchInput.addEventListener('change', function() {
-    if (toggleSwitchInput.checked) {
-        modeLabel.innerText = 'Image Mode';
-    } else {
-        modeLabel.innerText = 'Text Mode';
-    }
-});
-
 
 // Additional popup
 const additionalPopup = document.createElement('div');
@@ -744,12 +680,18 @@ additionalPopup.style.position = "absolute";
 additionalPopup.style.width = '450px';
 additionalPopup.style.height = '650px';
 
-// Position the additional popup next to the main popup after rendering
-setTimeout(() => {
+// Position the additional popup next to the main popup
+function positionAdditionalPopup() {
     const rect = popup.getBoundingClientRect();
     additionalPopup.style.top = `${rect.top}px`;
     additionalPopup.style.left = `${rect.right + 20}px`;
-}, 0);
+}
+
+// Call the function initially
+positionAdditionalPopup();
+
+// Reposition popups on window resize
+window.addEventListener('resize', positionAdditionalPopup);
 
 let offsetX, offsetY, startX, startY, startWidth, startHeight;
 let sourceWindowOffsetX = 10;
@@ -799,11 +741,7 @@ function makeDraggableAndResizable(element) {
         sourcesWindow.style.top = `${newY}px`;
 
         // Move additional popup with main popup
-        const additionalPopup = document.getElementById('additionalPopup');
-        if (additionalPopup) {
-            additionalPopup.style.left = `${newX + element.offsetWidth + 20}px`;
-            additionalPopup.style.top = `${newY}px`;
-        }
+        positionAdditionalPopup();
     }
 
     function resizeElement(e) {
@@ -822,10 +760,7 @@ function makeDraggableAndResizable(element) {
         sourcesWindow.style.left = `${element.offsetLeft + element.offsetWidth + sourceWindowOffsetX}px`;
 
         // Move additional popup with main popup
-        const additionalPopup = document.getElementById('additionalPopup');
-        if (additionalPopup) {
-            additionalPopup.style.left = `${element.offsetLeft + element.offsetWidth + 20}px`;
-        }
+        positionAdditionalPopup();
     }
 
     function closeDragOrResizeElement() {
