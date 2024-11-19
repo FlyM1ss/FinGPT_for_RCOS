@@ -1,3 +1,5 @@
+import { availableModels, selectedModels, getSelectedModels, loadModelSelection } from './content_archive_split/getSelectedModel.js';
+
 // Available models
 const availableModels = ["gpt-4o", "gpt-3.5-turbo"];
 
