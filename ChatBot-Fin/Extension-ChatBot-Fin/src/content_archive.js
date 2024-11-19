@@ -2,6 +2,7 @@ import { availableModels, selectedModels, getSelectedModels, loadModelSelection 
 import { handleChatResponse, appendChatElement } from './content_archive_split/chat_response.js';
 import { get_chat_response, get_adv_chat_response, clear, get_sources, logQuestion } from './content_archive_split/buttons.js';
 import { createPopup } from './content_archive_split/popup.js';
+import { makeDraggableAndResizable } from './drag_resize.js';
 
 const currentUrl = window.location.href.toString();
 console.log(currentUrl);
