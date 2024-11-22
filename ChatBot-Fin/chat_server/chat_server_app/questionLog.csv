@@ -2,3 +2,7 @@ Button,URL,Question
 Ask,https://finance.yahoo.com/,hello
 Ask,https://finance.yahoo.com/,picture
 Ask,https://finance.yahoo.com/,summarize
+Ask,https://finance.yahoo.com/?guccounter=1,summarize the page
+Ask,https://finance.yahoo.com/?guccounter=1,summarize agani
+Ask,https://finance.yahoo.com/?guccounter=1,list top stocks
+Ask,https://finance.yahoo.com/?guccounter=1,top losses
