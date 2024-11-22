@@ -63,6 +63,14 @@ CORS_ALLOWED_ORIGINS = [
 
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://fingptbackend-ejcrcydrg8hjb7ea.eastus2-01.azurewebsites.net',
+    "https://www.rpi.edu",
+    "https://www.bloomberg.com",
+    "https://finance.yahoo.com",
+]
+
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
