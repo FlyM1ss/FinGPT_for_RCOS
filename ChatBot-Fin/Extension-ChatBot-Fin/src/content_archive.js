@@ -3,6 +3,7 @@ import { handleChatResponse, appendChatElement } from './content_archive_split/c
 import { get_chat_response, get_adv_chat_response, clear, get_sources, logQuestion } from './content_archive_split/buttons.js';
 import { createPopup } from './content_archive_split/popup.js';
 import { makeDraggableAndResizable } from './drag_resize.js';
+import { setupPreferredLinks } from './content_archive_split/preferredLinks.js';
 
 const currentUrl = window.location.href.toString();
 console.log(currentUrl);
@@ -284,101 +285,15 @@ modelSelectionHeader.onclick = function() {
     }
 };
 
-// Preferred Links Section
-const preferredLinksContainer = document.createElement('div');
-preferredLinksContainer.id = "preferred_links_container";
+// Assuming settings_window and settingsIcon are defined in the main script
+const settings_window = document.createElement('div');
+settings_window.id = "settings_window";
+settings_window.style.display = 'none';
 
-const preferredLinksHeader = document.createElement('div');
-preferredLinksHeader.id = "preferred_links_header";
-preferredLinksHeader.innerText = "Preferred Links";
+const settingsIcon = document.getElementById('settings_icon'); // Example selector for your settings icon
 
-const toggleIcon = document.createElement('span');
-toggleIcon.innerText = "⯆";  // Down arrow
-
-preferredLinksHeader.appendChild(toggleIcon);
-preferredLinksContainer.appendChild(preferredLinksHeader);
-
-const preferredLinksContent = document.createElement('div');
-preferredLinksContent.id = "preferred_links_content";
-
-// Add Link Button
-const addLinkButton = document.createElement('div');
-addLinkButton.id = "add_link_button";
-addLinkButton.innerText = "+";
-addLinkButton.onclick = function() {
-    const newLink = prompt("Enter a new preferred URL:");
-    if (newLink) {
-        // Send the new link to the backend
-        fetch('http://127.0.0.1:8000/api/add_preferred_url/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: `url=${encodeURIComponent(newLink)}`
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    const newLinkItem = document.createElement('div');
-                    newLinkItem.className = 'preferred-link-item';
-                    newLinkItem.innerText = newLink;
-                    preferredLinksContent.appendChild(newLinkItem);
-                } else {
-                    alert('Failed to add the new URL.');
-                }
-            })
-            .catch(error => console.error('Error adding preferred link:', error));
-    }
-};
-
-// Load existing preferred links when the settings window is opened
-function loadPreferredLinks() {
-    fetch('http://127.0.0.1:8000/api/get_preferred_urls/')
-        .then(response => response.json())
-        .then(data => {
-            preferredLinksContent.innerHTML = ''; // Clear existing content
-            if (data.urls.length > 0) {
-                data.urls.forEach(link => {
-                    const linkItem = document.createElement('div');
-                    linkItem.className = 'preferred-link-item';
-                    linkItem.innerText = link;
-                    preferredLinksContent.appendChild(linkItem);
-                });
-            }
-            preferredLinksContent.appendChild(addLinkButton); // Add the '+' button
-        })
-        .catch(error => console.error('Error loading preferred links:', error));
-}
-
-preferredLinksContent.appendChild(addLinkButton);
-preferredLinksContainer.appendChild(preferredLinksContent);
-settings_window.appendChild(preferredLinksContainer);
-
-document.body.appendChild(settings_window);
-
-// Toggle Preferred Links Section
-preferredLinksHeader.onclick = function() {
-    if (preferredLinksContent.style.display === "none") {
-        preferredLinksContent.style.display = "block";
-        toggleIcon.innerText = "⯅";  // Up arrow
-    } else {
-        preferredLinksContent.style.display = "none";
-        toggleIcon.innerText = "⯆";  // Down arrow
-    }
-};
-
-// Load preferred links when settings are opened
-settingsIcon.onclick = function() {
-    const rect = settingsIcon.getBoundingClientRect();
-    settings_window.style.top = `${rect.bottom}px`;
-    settings_window.style.left = `${rect.left}px`;
-    settings_window.style.display = settings_window.style.display === 'none' ? 'block' : 'none';
-
-    // Load preferred links
-    if (settings_window.style.display === 'block') {
-        loadPreferredLinks();
-    }
-};
+// Initialize the Preferred Links section
+setupPreferredLinks(settings_window, settingsIcon);
 
 // Close settings popup when clicks outside
 document.addEventListener('click', function(event) {
