@@ -17,7 +17,7 @@ function getSelectedModels() {
 }
 
 // Fetch the text content
-fetch(`http://127.0.0.1:8000/input_webtext/?textContent=${encodedContent}`, { method: "POST" })
+fetch(`https://fingptbackend-ejcrcydrg8hjb7ea.eastus2-01.azurewebsites.net/input_webtext/?textContent=${encodedContent}`, { method: "POST" })
     .then(response => {
         if (!response.ok) {
             throw new Error('Network response was not ok');
@@ -59,7 +59,7 @@ function handleChatResponse(question, isAdvanced = false) {
     // Read the RAG checkbox state
     const useRAG = document.getElementById('ragSwitch').checked;
 
-    fetch(`http://127.0.0.1:8000/${endpoint}/?question=${encodedQuestion}&models=${selectedModels.join(',')}&is_advanced=${isAdvanced}&use_rag=${useRAG}`, { method: 'GET' })
+    fetch(`https://fingptbackend-ejcrcydrg8hjb7ea.eastus2-01.azurewebsites.net/${endpoint}/?question=${encodedQuestion}&models=${selectedModels.join(',')}&is_advanced=${isAdvanced}&use_rag=${useRAG}`, { method: 'GET' })
         .then(response => response.json())
         .then(data => {
             const endTime = performance.now();
@@ -120,7 +120,7 @@ function get_adv_chat_response() {
     if (isImageMode) {
         // Image Processing Mode
         // Send a request to process the image with the text prompt
-        fetch('http://127.0.0.1:8000/process_image/', {
+        fetch('https://fingptbackend-ejcrcydrg8hjb7ea.eastus2-01.azurewebsites.net/process_image/', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 'text_prompt': question })
@@ -166,7 +166,7 @@ function clear() {
     if (sourceurls) {
         sourceurls.innerHTML = "";
     }
-    fetch(`http://127.0.0.1:8000/clear_messages/`, { method: "POST" })
+    fetch(`https://fingptbackend-ejcrcydrg8hjb7ea.eastus2-01.azurewebsites.net/clear_messages/`, { method: "POST" })
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -191,7 +191,7 @@ function get_sources(search_query) {
     loadingSpinner.style.display = 'block'; // Show the spinner
     source_urls.style.display = 'none'; // Hide the source list initially
 
-    fetch(`http://127.0.0.1:8000/get_source_urls/?query=${String(search_query)}`, { method: "GET" })
+    fetch(`https://fingptbackend-ejcrcydrg8hjb7ea.eastus2-01.azurewebsites.net/get_source_urls/?query=${String(search_query)}`, { method: "GET" })
         .then(response => response.json())
         .then(data => {
             console.log(data["resp"]);
@@ -225,7 +225,7 @@ function get_sources(search_query) {
 function logQuestion(question, button) {
     const currentUrl = window.location.href;
 
-    fetch(`http://127.0.0.1:8000/log_question/?question=${encodeURIComponent(question)}&button=${encodeURIComponent(button)}&current_url=${encodeURIComponent(currentUrl)}`,
+    fetch(`https://fingptbackend-ejcrcydrg8hjb7ea.eastus2-01.azurewebsites.net/log_question/?question=${encodeURIComponent(question)}&button=${encodeURIComponent(button)}&current_url=${encodeURIComponent(currentUrl)}`,
         { method: "GET" })
         .then(response => response.json())
         .then(data => {
@@ -538,7 +538,7 @@ addLinkButton.onclick = function() {
     const newLink = prompt("Enter a new preferred URL:");
     if (newLink) {
         // Send the new link to the backend
-        fetch('http://127.0.0.1:8000/api/add_preferred_url/', {
+        fetch('https://fingptbackend-ejcrcydrg8hjb7ea.eastus2-01.azurewebsites.net/api/add_preferred_url/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -562,7 +562,7 @@ addLinkButton.onclick = function() {
 
 // Load existing preferred links when the settings window is opened
 function loadPreferredLinks() {
-    fetch('http://127.0.0.1:8000/api/get_preferred_urls/')
+    fetch('https://fingptbackend-ejcrcydrg8hjb7ea.eastus2-01.azurewebsites.net/api/get_preferred_urls/')
         .then(response => response.json())
         .then(data => {
             preferredLinksContent.innerHTML = ''; // Clear existing content

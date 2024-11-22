@@ -7,10 +7,10 @@ import openai
 import base64
 from googlesearch import search
 from urllib.parse import urljoin
+from django.conf import settings
 from . import cdm_rag
 
-load_dotenv()
-api_key = os.getenv("API_KEY7")
+api_key = settings.OPENAI_API_KEY
 
 
 def data_scrape(url, timeout=2):
