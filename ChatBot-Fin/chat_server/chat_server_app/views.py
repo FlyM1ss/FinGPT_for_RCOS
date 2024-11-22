@@ -10,7 +10,6 @@ import os
 import csv
 import traceback
 import request
-from transformers import AutoTokenizer, AutoModelForCausalLM
 
 
 message_list = [
