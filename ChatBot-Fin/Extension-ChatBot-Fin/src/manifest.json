@@ -13,7 +13,8 @@
         "https://www.bloomberg.com/*",
         "https://finance.yahoo.com/*",
         "https://cdm.finos.org/*",
-        "https://www.sec.gov/*"
+        "https://www.sec.gov/*",
+        "https://www.xbrl.org/*"
       ],
       "js": [
         "content_archive.js"
