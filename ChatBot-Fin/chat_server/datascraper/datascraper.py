@@ -7,11 +7,17 @@ import openai
 import base64
 from googlesearch import search
 from urllib.parse import urljoin
+from django.conf import settings
 from . import cdm_rag
 
-load_dotenv()
-api_key = os.getenv("API_KEY7")
+# api_key = settings.OPENAI_API_KEY
+openai.api_type = "azure"
+openai.api_base = "https://apiforfingpt.openai.azure.com/"
+openai.api_version = "2024-08-06"
 
+openai.api_key = os.getenv("AZURE_OPENAI_API_KEY")
+
+model_deployment = "gpt-4o"
 
 def data_scrape(url, timeout=2):
     try:
@@ -118,68 +124,65 @@ def search_websites_with_keyword(keyword):
 
     return message_list
 
-def create_rag_response(user_input, message_list, model):
+def create_rag_response(user_input, message_list):
     """
-    Generates a response using the RAG pipeline.
-    """
-    try:
-        response = cdm_rag.get_rag_response(user_input, model)
-        message_list.append({"role": "system", "content": response})
-        return response
-    except FileNotFoundError as e:
-        # Handle the error and return the error message
-        error_message = str(e)
-        message_list.append({"role": "system", "content": error_message})
-        return error_message
-
-def create_rag_advanced_response(user_input, message_list, model):
-    """
-    Generates an advanced response using the RAG pipeline.
+    Generates a response using the RAG pipeline with Azure OpenAI Service.
     """
     try:
-        response = cdm_rag.get_rag_advanced_response(user_input, model)
-        message_list.append({"role": "system", "content": response})
+        response = cdm_rag.get_rag_response(user_input, model_deployment)
+        message_list.append({"role": "assistant", "content": response})
         return response
     except FileNotFoundError as e:
-        # Handle the error and return the error message
         error_message = str(e)
-        message_list.append({"role": "system", "content": error_message})
+        message_list.append({"role": "assistant", "content": error_message})
+        return error_message
+
+def create_rag_advanced_response(user_input, message_list):
+    """
+    Generates an advanced response using the RAG pipeline with Azure OpenAI Service.
+    """
+    try:
+        response = cdm_rag.get_rag_advanced_response(user_input, model_deployment)
+        message_list.append({"role": "assistant", "content": response})
+        return response
+    except FileNotFoundError as e:
+        error_message = str(e)
+        message_list.append({"role": "assistant", "content": error_message})
         return error_message
 
 
-def create_response(user_input, message_list, model="gpt-4o"):
+def create_response(user_input, message_list):
     """
-    Creates a response using OpenAI's API and a specified model.
+    Creates a response using Azure OpenAI Service and a specified deployment name.
     """
     print(message_list)
-    openai.api_key = api_key
-    print("starting creation")
+    print("Starting creation")
 
     message_list.append({"role": "user", "content": user_input})
 
     completion = openai.ChatCompletion.create(
-        model=model,
+        engine=model_deployment,  # Use 'engine' instead of 'model'
         messages=message_list,
     )
 
-    print(completion.choices[0].message.content)
+    assistant_response = completion.choices[0].message.content
+    print(assistant_response)
 
-    message_list.append({"role": "system", "content": completion.choices[0].message.content})
+    message_list.append({"role": "assistant", "content": assistant_response})
 
-    return completion.choices[0].message.content
+    return assistant_response
 
 
-def create_advanced_response(user_input, message_list, model="gpt-4o"):
+def create_advanced_response(user_input, message_list):
     """
     Creates an advanced response by searching through user-preferred URLs first,
-    and then falling back to a general web search using the specified model.
+    then falling back to a general web search using the specified deployment name.
     """
     print(message_list)
-    openai.api_key = api_key
-    print("starting creation")
+    print("Starting creation")
 
     # Search in preferred URLs first
-    print("Searching user preferred URLs")
+    print("Searching user-preferred URLs")
     preferred_message_list = search_preferred_urls(user_input)
     message_list.extend(preferred_message_list)
 
@@ -188,32 +191,26 @@ def create_advanced_response(user_input, message_list, model="gpt-4o"):
         for url in search(user_input, num=10, stop=10, pause=0):
             info = data_scrape(url)
             if info != -1:
-                message_list.append({"role": "system", "content": "url: " + str(url) + " info: " + info})
+                message_list.append({"role": "system", "content": f"url: {url} info: {info}"})
 
     message_list.append({"role": "user", "content": user_input})
     completion = openai.ChatCompletion.create(
-        model=model,
+        engine=model_deployment,  # Use 'engine' instead of 'model'
         messages=message_list,
     )
-    print(completion.choices[0].message.content)
+    assistant_response = completion.choices[0].message.content
+    print(assistant_response)
 
-    return completion.choices[0].message.content
-
+    return assistant_response
 
 def process_uploaded_file(file_path, text_prompt):
     try:
-        # Set the API key
-        openai.api_key = os.environ.get("API_KEY7")
-        if not openai.api_key:
-            error_msg = "Error: GPT-4o API key is not set in the environment variable 'API_KEY7'."
-            print(error_msg)
-            return error_msg
+        # API key is already set globally; no need to set it again
 
         # Construct the raw GitHub URL
         username = 'FlyM1ss'
         repository = 'FinGPT_for_RCOS'
         branch = 'fingpt_for_sec'
-        # Adjust the path_to_file if necessary
         path_to_file = os.path.relpath(file_path).replace('\\', '/')
 
         image_url = f'https://raw.githubusercontent.com/{username}/{repository}/{branch}/{path_to_file}'
@@ -228,17 +225,17 @@ def process_uploaded_file(file_path, text_prompt):
 
         # Create the chat completion
         completion = openai.ChatCompletion.create(
-            model="gpt-4o",
+            engine="<your-image-model-deployment-name>",
             messages=messages,
         )
 
         # Extract and return the response
         answer = completion.choices[0].message.content
-        print(f"GPT-4o Response: {answer}")
+        print(f"Assistant Response: {answer}")
         return answer
 
     except Exception as e:
-        print(f"Error processing image with GPT-4o: {e}")
+        print(f"Error processing image: {e}")
         return f"An error occurred while processing the image: {e}"
 
 
@@ -285,12 +282,16 @@ def get_website_icon(url):
 
 def handle_multiple_models(question, message_list, models):
     """
-    Handles responses from multiple models and returns a dictionary with model names as keys.
+    Handles responses from multiple model deployments and returns a dictionary with deployment names as keys.
     """
     responses = {}
-    for model in models:
-        if "advanced" in model:
-            responses[model] = create_advanced_response(question, message_list.copy(), model)
+    for model_deployments in models:
+        if "advanced" in model_deployments:
+            responses[model_deployments] = create_advanced_response(
+                question, message_list.copy()
+            )
         else:
-            responses[model] = create_response(question, message_list.copy(), model)
+            responses[model_deployments] = create_response(
+                question, message_list.copy()
+            )
     return responses
