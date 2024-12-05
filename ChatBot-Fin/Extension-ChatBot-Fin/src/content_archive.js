@@ -5,6 +5,7 @@ import { createPopup } from './content_archive_split/popup.js';
 import { makeDraggableAndResizable } from './drag_resize.js';
 import { setupPreferredLinks } from './content_archive_split/preferredLinks.js';
 import { createModelSelection } from './content_archive_split/modelSelection.js';
+import { createSourcesWindow } from './sourcesWindow.js';
 
 const currentUrl = window.location.href.toString();
 console.log(currentUrl);
@@ -248,127 +249,7 @@ document.addEventListener('click', function(event) {
 
 
 // Sources Window
-const sources_window = document.createElement('div');
-sources_window.id = "sources_window";
-sources_window.style.display = 'none';
-
-const sourcesHeader = document.createElement('div');
-sourcesHeader.id = "sources_window_header";
-
-const sourcesTitle = document.createElement('h2');
-sourcesTitle.innerText = "Sources";
-
-const sourcesCloseIcon = document.createElement('span');
-sourcesCloseIcon.innerText = "❌";
-sourcesCloseIcon.className = "icon";
-sourcesCloseIcon.onclick = function() { sources_window.style.display = 'none'; };
-
-sourcesHeader.appendChild(sourcesTitle);
-sourcesHeader.appendChild(sourcesCloseIcon);
-
-// Loading spinner
-const loadingSpinner = document.createElement('div');
-loadingSpinner.id = "loading_spinner";
-loadingSpinner.className = "spinner";
-loadingSpinner.style.display = 'none'; // hide loading initially
-
-const source_urls = document.createElement('ul');
-source_urls.id = "source_urls";
-
-sources_window.appendChild(sourcesHeader);
-sources_window.appendChild(loadingSpinner);
-sources_window.appendChild(source_urls);
-
-// Append windows to the body
-document.body.appendChild(sources_window);
-document.body.appendChild(popup);
-document.body.appendChild(additionalPopup);
-
-let offsetX, offsetY, startX, startY, startWidth, startHeight;
-let sourceWindowOffsetX = 10;
-
-function makeDraggableAndResizable(element) {
-    let isDragging = false;
-    let isResizing = false;
-
-    element.querySelector('.draggable').addEventListener('mousedown', function(e) {
-        if (['INPUT', 'TEXTAREA', 'BUTTON', 'A'].includes(e.target.tagName)) {
-            return;
-        }
-
-        e.preventDefault();
-
-        const rect = element.getBoundingClientRect();
-        const isRightEdge = e.clientX > rect.right - 10;
-        const isBottomEdge = e.clientY > rect.bottom - 10;
-
-        if (isRightEdge || isBottomEdge) {
-            isResizing = true;
-            startX = e.clientX;
-            startY = e.clientY;
-            startWidth = rect.width;
-            startHeight = rect.height;
-            document.addEventListener('mousemove', resizeElement);
-        } else {
-            isDragging = true;
-            offsetX = e.clientX - rect.left;
-            offsetY = e.clientY - rect.top;
-            document.addEventListener('mousemove', dragElement);
-        }
-
-        document.addEventListener('mouseup', closeDragOrResizeElement);
-    });
-
-    function dragElement(e) {
-        e.preventDefault();
-        const newX = e.clientX - offsetX + window.scrollX;
-        const newY = e.clientY - offsetY + window.scrollY;
-        element.style.left = `${newX}px`;
-        element.style.top = `${newY}px`;
-
-        // move sources window with main popup
-        const sourcesWindow = document.getElementById('sources_window');
-        sourcesWindow.style.left = `${newX + element.offsetWidth + sourceWindowOffsetX}px`;
-        sourcesWindow.style.top = `${newY}px`;
-
-        // move additional popup with main popup
-        const additionalPopup = document.getElementById('additionalPopup');
-        if (additionalPopup) {
-            additionalPopup.style.left = `${newX + element.offsetWidth + 20}px`;
-            additionalPopup.style.top = `${newY}px`;
-        }
-    }
-
-    function resizeElement(e) {
-        e.preventDefault();
-        const newWidth = startWidth + (e.clientX - startX);
-        const newHeight = startHeight + (e.clientY - startY);
-        if (newWidth > 250) {
-            element.style.width = `${newWidth}px`;
-        }
-        if (newHeight > 300) {
-            element.style.height = `${newHeight}px`;
-        }
-
-        // move sources window with main popup
-        const sourcesWindow = document.getElementById('sources_window');
-        sourcesWindow.style.left = `${element.offsetLeft + element.offsetWidth + sourceWindowOffsetX}px`;
-
-        // move additional popup with main popup
-        const additionalPopup = document.getElementById('additionalPopup');
-        if (additionalPopup) {
-            additionalPopup.style.left = `${element.offsetLeft + element.offsetWidth + 20}px`;
-        }
-    }
-
-    function closeDragOrResizeElement() {
-        document.removeEventListener('mousemove', dragElement);
-        document.removeEventListener('mousemove', resizeElement);
-        document.removeEventListener('mouseup', closeDragOrResizeElement);
-        isDragging = false;
-        isResizing = false;
-    }
-}
+createSourcesWindow(popup);
 
 makeDraggableAndResizable(popup);
 
