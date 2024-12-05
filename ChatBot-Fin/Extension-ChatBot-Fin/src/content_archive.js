@@ -4,6 +4,7 @@ import { get_chat_response, get_adv_chat_response, clear, get_sources, logQuesti
 import { createPopup } from './content_archive_split/popup.js';
 import { makeDraggableAndResizable } from './drag_resize.js';
 import { setupPreferredLinks } from './content_archive_split/preferredLinks.js';
+import { createModelSelection } from './content_archive_split/modelSelection.js';
 
 const currentUrl = window.location.href.toString();
 console.log(currentUrl);
@@ -218,72 +219,14 @@ lightModeSwitch.onchange = function() {
 settingsLabel.appendChild(lightModeSwitch);
 settings_window.appendChild(settingsLabel);
 
-// Model Selection Section
-const modelSelectionContainer = document.createElement('div');
-modelSelectionContainer.id = "model_selection_container";
+// model selection
 
-const modelSelectionHeader = document.createElement('div');
-modelSelectionHeader.id = "model_selection_header";
-modelSelectionHeader.innerText = `Model: ${selectedModels.join(' & ')}`;  // show default
+const settingsWindow = document.getElementById('settings_window'); // Ensure this is defined
+const availableModels = ['Model A', 'Model B', 'Model C']; // Example models
+let selectedModels = ['Model A']; // Example default selection
 
-const modelToggleIcon = document.createElement('span');
-modelToggleIcon.innerText = "⯆";
+createModelSelection(settingsWindow, availableModels, selectedModels);
 
-modelSelectionHeader.appendChild(modelToggleIcon);
-modelSelectionContainer.appendChild(modelSelectionHeader);
-
-const modelSelectionContent = document.createElement('div');
-modelSelectionContent.id = "model_selection_content";
-modelSelectionContent.style.display = "none";
-
-// handle model selection
-function handleModelSelection(modelItem, modelName) {
-    if (selectedModels.includes(modelName)) {
-        // Deselect
-        selectedModels = selectedModels.filter(model => model !== modelName);
-        modelItem.classList.remove('selected-model');
-    } else if (selectedModels.length < 2) {
-        // Select
-        selectedModels.push(modelName);
-        modelItem.classList.add('selected-model');
-    } else {
-        alert("You can only select up to 2 models.");
-    }
-
-    modelSelectionHeader.innerText = `Model: ${selectedModels.join(' & ') || "Select up to 2"}`;
-    modelSelectionHeader.appendChild(modelToggleIcon);
-}
-
-// Create a model selection item for each available model
-availableModels.forEach(model => {
-    const modelItem = document.createElement('div');
-    modelItem.className = 'model-selection-item';
-    modelItem.innerText = model;
-
-    // default selected models
-    if (selectedModels.includes(model)) {
-        modelItem.classList.add('selected-model');
-    }
-
-    modelItem.onclick = function() {
-        handleModelSelection(modelItem, model);
-    };
-    modelSelectionContent.appendChild(modelItem);
-});
-
-modelSelectionContainer.appendChild(modelSelectionContent);
-settings_window.appendChild(modelSelectionContainer);
-
-// Toggle Model Selection Section
-modelSelectionHeader.onclick = function() {
-    if (modelSelectionContent.style.display === "none") {
-        modelSelectionContent.style.display = "block";
-        modelToggleIcon.innerText = "⯅";
-    } else {
-        modelSelectionContent.style.display = "none";
-        modelToggleIcon.innerText = "⯆";
-    }
-};
 
 // Assuming settings_window and settingsIcon are defined in the main script
 const settings_window = document.createElement('div');
