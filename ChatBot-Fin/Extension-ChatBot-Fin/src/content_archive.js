@@ -69,38 +69,58 @@ const clearButton = document.getElementById('clearButton');
 const searchButton = document.getElementById('searchButton');
 const searchTextbox = document.getElementById('searchTextbox');
 
+// Add Enter key functionality
+const textbox = document.getElementById('textbox');
+
+textbox.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+        const question = textbox.value.trim();
+        if (question) {
+            const isAdvanced = event.shiftKey; // Use Shift + Enter for advanced ask
+            console.log(`${isAdvanced ? "Advanced" : "Normal"} question asked:`, question);
+            handleChatResponse(question, isAdvanced);
+            textbox.value = '';
+        } else {
+            alert("Please enter a question.");
+        }
+    }
+});
+
 // Normal Ask button click
 askButton.addEventListener('click', () => {
-    const question = document.getElementById('textbox').value.trim();
+    const question = textbox.value.trim();
     if (question) {
         console.log("Normal question asked:", question);
         handleChatResponse(question, false);
-        document.getElementById('textbox').value = '';
+        textbox.value = '';
     } else {
         alert("Please enter a question.");
     }
 });
 
+// Advanced Ask button click
 advAskButton.addEventListener('click', () => {
-    const question = document.getElementById('textbox').value.trim();
+    const question = textbox.value.trim();
     if (question) {
         console.log("Advanced question asked:", question);
         handleChatResponse(question, true);
-        document.getElementById('textbox').value = '';
+        textbox.value = '';
     } else {
         alert("Please enter a question.");
     }
 });
 
+// Clear button click
 clearButton.addEventListener('click', () => {
     clear();
 });
 
-// Search sources button
+// Search sources button click
 searchButton.addEventListener('click', () => {
     const searchQuery = searchTextbox.value.trim();
     get_sources(searchQuery);
 });
+
 
 
 // additional popup for the second model
