@@ -1,5 +1,27 @@
 import { handleResponse, updateSources } from './ui.js';
 
+// Add a global variable for the selected model
+let selectedModel = 'gpt-3.5-turbo'; // Default model selection
+
+// Update selected model dynamically
+export function updateSelectedModel(model) {
+    selectedModel = model;
+    console.log(`Model updated to: ${selectedModel}`);
+}
+
+// Add event listener for model selection dropdown
+document.addEventListener('DOMContentLoaded', () => {
+    const modelSelect = document.getElementById('modelSelect');
+    modelSelect.addEventListener('change', (event) => {
+        updateSelectedModel(event.target.value);
+    });
+});
+
+// Update fetch URLs to include selected model
+fetch(`http://127.0.0.1:8000/get_chat_response/?model=${selectedModel}&question=${encodeURIComponent(question)}`, { method: "GET" })
+
+fetch(`http://127.0.0.1:8000/get_adv_response/?model=${selectedModel}&question=${encodeURIComponent(question)}`, { method: "GET" })
+
 export function fetchTextContent(encodedContent) {
     fetch(`http://127.0.0.1:8000/input_webtext/?textContent=${encodedContent}`, { method: "POST" })
         .then(response => {
