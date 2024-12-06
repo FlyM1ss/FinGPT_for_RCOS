@@ -13,7 +13,7 @@ from . import cdm_rag
 # api_key = settings.OPENAI_API_KEY
 openai.api_type = "azure"
 openai.api_base = "https://apiforfingpt.openai.azure.com/"
-openai.api_version = "2024-08-06"
+# openai.api_version = "2024-08-06"
 
 openai.api_key = os.getenv("AZURE_OPENAI_API_KEY")
 

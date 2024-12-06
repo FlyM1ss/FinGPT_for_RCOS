@@ -14,7 +14,8 @@
         "https://finance.yahoo.com/*",
         "https://cdm.finos.org/*",
         "https://www.sec.gov/*",
-        "https://www.xbrl.org/*"
+        "https://www.xbrl.org/*",
+        "https://mathcup.com/*"
       ],
       "js": [
         "content_archive.js"

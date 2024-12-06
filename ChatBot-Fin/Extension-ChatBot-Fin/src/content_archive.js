@@ -7,10 +7,10 @@ const textContent = document.body.innerText;
 const encodedContent = encodeURIComponent(textContent);
 
 // Available models
-const availableModels = ["gpt-4o", "gpt-3.5-turbo"];
+const availableModels = ["gpt-4o", "gpt-35-turbo-instinct"];
 
-// Initialize model selection with gpt-4o and gpt-3.5-turbo as default
-let selectedModels = ['gpt-4o', 'gpt-3.5-turbo'];
+// Initialize model selection with gpt-4o and gpt-35-turbo-instinct as default
+let selectedModels = ['gpt-4o', 'gpt-35-turbo-instinct'];
 
 function getSelectedModels() {
     return selectedModels;

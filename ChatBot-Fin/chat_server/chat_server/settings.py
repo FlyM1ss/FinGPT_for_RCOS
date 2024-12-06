@@ -61,7 +61,8 @@ CORS_ALLOWED_ORIGINS = [
     "https://www.rpi.edu/*",
     "https://www.bloomberg.com/*",
     "https://finance.yahoo.com/*",
-    "https://www.xbrl.org/*"
+    "https://www.xbrl.org/*",
+    "https://mathcup.com/*"
 
 ]
 
