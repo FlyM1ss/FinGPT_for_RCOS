@@ -44,6 +44,11 @@ response.appendChild(loading);
     loading.innerText = "Error fetching response. Please try again.";
 });
 
+// Added performance logging
+const startTime = performance.now();
+const endTime = performance.now();
+const responseTime = endTime - startTime;
+console.log(`Response time for ${selectedModel}: ${responseTime} ms`);
 
 export function fetchTextContent(encodedContent) {
     fetch(`http://127.0.0.1:8000/input_webtext/?textContent=${encodedContent}`, { method: "POST" })
