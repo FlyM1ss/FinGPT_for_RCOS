@@ -22,6 +22,29 @@ fetch(`http://127.0.0.1:8000/get_chat_response/?model=${selectedModel}&question=
 
 fetch(`http://127.0.0.1:8000/get_adv_response/?model=${selectedModel}&question=${encodeURIComponent(question)}`, { method: "GET" })
 
+// Enhanced error handling in fetch requests
+.catch(error => {
+    console.error('Error in fetchTextContent:', error);
+});
+
+// Update loading indicator for better user feedback
+const loading = document.createElement('span');
+loading.innerText = `${selectedModel}: Loading...`; // Reflect the selected model
+response.appendChild(loading);
+
+// Handle errors in getChatResponse
+.catch(error => {
+    console.error('Error in getChatResponse:', error);
+    loading.innerText = "Error fetching response. Please try again.";
+});
+
+// Handle errors in getAdvChatResponse
+.catch(error => {
+    console.error('Error in getAdvChatResponse:', error);
+    loading.innerText = "Error fetching response. Please try again.";
+});
+
+
 export function fetchTextContent(encodedContent) {
     fetch(`http://127.0.0.1:8000/input_webtext/?textContent=${encodedContent}`, { method: "POST" })
         .then(response => {
