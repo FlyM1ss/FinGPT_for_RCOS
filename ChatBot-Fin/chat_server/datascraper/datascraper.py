@@ -10,14 +10,13 @@ from urllib.parse import urljoin
 from django.conf import settings
 from . import cdm_rag
 
-# api_key = settings.OPENAI_API_KEY
 openai.api_type = "azure"
-openai.api_base = "https://apiforfingpt.openai.azure.com/"
-openai.api_version = "2024-08-06"
-
+openai.api_base = "https://apiforfingpt.openai.azure.com"
+openai.api_version = "2024-08-01-preview"
 openai.api_key = os.getenv("AZURE_OPENAI_API_KEY")
 
 model_deployment = "gpt-4o"
+
 
 def data_scrape(url, timeout=2):
     try:
@@ -161,8 +160,10 @@ def create_response(user_input, message_list):
     message_list.append({"role": "user", "content": user_input})
 
     completion = openai.ChatCompletion.create(
-        engine=model_deployment,  # Use 'engine' instead of 'model'
+        engine=model_deployment,
         messages=message_list,
+        temperature=0.4,
+        top_p=1.0
     )
 
     assistant_response = completion.choices[0].message.content
@@ -171,6 +172,7 @@ def create_response(user_input, message_list):
     message_list.append({"role": "assistant", "content": assistant_response})
 
     return assistant_response
+
 
 
 def create_advanced_response(user_input, message_list):
@@ -195,13 +197,19 @@ def create_advanced_response(user_input, message_list):
 
     message_list.append({"role": "user", "content": user_input})
     completion = openai.ChatCompletion.create(
-        engine=model_deployment,  # Use 'engine' instead of 'model'
+        engine=model_deployment,
         messages=message_list,
+        temperature=0.5,
+        top_p=1.0
     )
+
     assistant_response = completion.choices[0].message.content
     print(assistant_response)
 
+    # Include the assistant response in the conversation context
+    message_list.append({"role": "assistant", "content": assistant_response})
     return assistant_response
+
 
 def process_uploaded_file(file_path, text_prompt):
     try:
@@ -225,7 +233,7 @@ def process_uploaded_file(file_path, text_prompt):
 
         # Create the chat completion
         completion = openai.ChatCompletion.create(
-            engine="<your-image-model-deployment-name>",
+            engine=model_deployment,
             messages=messages,
         )
 
