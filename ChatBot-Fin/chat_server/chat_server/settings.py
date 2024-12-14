@@ -27,7 +27,12 @@ OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["*", "https://*"]
+ALLOWED_HOSTS = [
+    "fingptbackend-ejcrcydrg8hjb7ea.eastus2-01.azurewebsites.net",
+    "localhost",
+    "127.0.0.1"
+]
+
 
 
 # Application definition
