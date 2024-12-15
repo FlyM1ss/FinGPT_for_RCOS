@@ -30,18 +30,19 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
         
-      # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
+      # Optional: Add step to run tests here
+      # - name: Run Tests
+      #   run: pytest
 
+      # Zip only the Django project directory
       - name: Zip artifact for deployment
-        run: zip release.zip ./* -r
+        run: zip -r release.zip fingpt_rcos/ChatBot-Fin/chat_server
 
       - name: Upload artifact for deployment jobs
         uses: actions/upload-artifact@v4
         with:
           name: python-app
-          path: |
-            release.zip
-            !venv/
+          path: release.zip
 
   deploy:
     runs-on: ubuntu-latest
@@ -61,7 +62,6 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip release.zip
 
-      
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -69,10 +69,12 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_A3CC39164DCE4C93B4703BC8CE54D848 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_EBFFC852ABCF483495E8AEA44BDCBEF7 }}
 
+      # Specify the 'package' input to deploy the extracted folder directly.
+      # This should match the directory structure from the unzip step.
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v3
         id: deploy-to-webapp
         with:
           app-name: 'fingptBackend'
           slot-name: 'Production'
-          
+          package: './fingpt_rcos/ChatBot-Fin/chat_server'
