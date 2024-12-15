@@ -2,6 +2,7 @@
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 # More info on Python, GitHub Actions, and Azure App Service: https://aka.ms/python-webapps-actions
 
+
 name: Build and deploy Python app to Azure Web App - fingptBackend
 
 on:
@@ -34,9 +35,9 @@ jobs:
       # - name: Run Tests
       #   run: pytest
 
-      # Zip only the Django project directory
+      # Zip only the directory containing Django
       - name: Zip artifact for deployment
-        run: zip -r release.zip fingpt_rcos/ChatBot-Fin/chat_server
+        run: zip -r release.zip ChatBot-Fin/chat_server
 
       - name: Upload artifact for deployment jobs
         uses: actions/upload-artifact@v4
@@ -69,12 +70,12 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_A3CC39164DCE4C93B4703BC8CE54D848 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_EBFFC852ABCF483495E8AEA44BDCBEF7 }}
 
-      # Specify the 'package' input to deploy the extracted folder directly.
-      # This should match the directory structure from the unzip step.
+      # Specify 'package' input to deploy the extracted folder directly.
+      # This points to ChatBot-Fin/chat_server which was unzipped from release.zip
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v3
         id: deploy-to-webapp
         with:
           app-name: 'fingptBackend'
           slot-name: 'Production'
-          package: './fingpt_rcos/ChatBot-Fin/chat_server'
+          package: './ChatBot-Fin/chat_server'
